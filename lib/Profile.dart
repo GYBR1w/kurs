@@ -111,10 +111,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Профиль'),
-          backgroundColor: Colors.white, // Белый AppBar
+          title: const Text(
+            'Профиль',
+            style: TextStyle(
+              fontFamily: 'Montserrat',
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
-        backgroundColor: Colors.white, // Белый фон
+
+        backgroundColor: Colors.white,
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(24.0),
@@ -142,11 +149,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ElevatedButton(
                   onPressed: () => _showEditDialog(context),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue, // Синий фон
+                    backgroundColor: Colors.blue,
                     padding: EdgeInsets.symmetric(vertical: 16),
-                    minimumSize: Size(double.infinity, 50), // Растягиваем кнопку на всю ширину
+                    minimumSize: Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // Увеличиваем радиус закругления
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   child: const Text(
@@ -158,12 +165,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 OutlinedButton(
                   onPressed: _logout,
                   style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: Colors.black), // Черная обводка
+                    side: BorderSide(color: Colors.black),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // Увеличиваем радиус закругления
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     padding: EdgeInsets.symmetric(vertical: 16),
-                    minimumSize: Size(double.infinity, 50), // Растягиваем кнопку на всю ширину
+                    minimumSize: Size(double.infinity, 50), //
                   ),
                   child: const Text(
                     'Выйти',

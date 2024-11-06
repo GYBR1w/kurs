@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'login.dart'; // Импортируем экран входа
-import 'registration_screen.dart'; // Импортируем экран регистрации
+import 'login.dart';
+import 'registration_screen.dart';
 
 class UnloginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Светлый фон
+      backgroundColor: Colors.white,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -14,14 +14,12 @@ class UnloginScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Логотип или изображение
               Icon(
-                Icons.star, // Замените на ваше изображение
+                Icons.star,
                 size: 100,
                 color: Colors.black54,
               ),
               SizedBox(height: 20),
-              // Название приложения
               Text(
                 'FlavorCraft',
                 style: TextStyle(
@@ -32,7 +30,6 @@ class UnloginScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 10),
-              // Описание
               Text(
                 'Личный кулинарный помощник, легкие и вкусные рецепты на каждый день.',
                 style: TextStyle(
@@ -43,7 +40,6 @@ class UnloginScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 40),
-              // Кнопка входа
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
@@ -52,11 +48,11 @@ class UnloginScreen extends StatelessWidget {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue, // Синий фон
+                  backgroundColor: Colors.blue,
                   padding: EdgeInsets.symmetric(vertical: 16),
-                  minimumSize: Size(double.infinity, 50), // Растягиваем кнопку на всю ширину
+                  minimumSize: Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10), // Увеличиваем радиус закругления
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 child: Text(
@@ -66,7 +62,6 @@ class UnloginScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20),
-              // Кнопка "Создать аккаунт"
               OutlinedButton(
                 onPressed: () {
                   Navigator.push(
@@ -75,16 +70,16 @@ class UnloginScreen extends StatelessWidget {
                   );
                 },
                 style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: Colors.black), // Черная обводка
+                  side: BorderSide(color: Colors.black),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10), // Увеличиваем радиус закругления
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   padding: EdgeInsets.symmetric(vertical: 16),
-                  minimumSize: Size(double.infinity, 50), // Растягиваем кнопку на всю ширину
+                  minimumSize: Size(double.infinity, 50),
                 ),
                 child: Text(
                   'Создать аккаунт',
-                  style: TextStyle(fontSize: 18, fontFamily: 'Montserrat', color: Colors.black), // Цвет текста кнопки
+                  style: TextStyle(fontSize: 18, fontFamily: 'Montserrat', color: Colors.black),
                 ),
               ),
             ],
@@ -94,17 +89,17 @@ class UnloginScreen extends StatelessWidget {
     );
   }
 
-  // Метод для создания текстового поля
+
   Widget _buildTextField(String label, {bool obscureText = false}) {
     return TextField(
       obscureText: obscureText,
       decoration: InputDecoration(
         labelText: label,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10), // Увеличиваем радиус закругления
+          borderRadius: BorderRadius.circular(10),
         ),
       ),
-      style: TextStyle(fontSize: 18), // Увеличиваем размер текста
+      style: TextStyle(fontSize: 18),
     );
   }
 }

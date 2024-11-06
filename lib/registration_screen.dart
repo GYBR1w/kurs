@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'FlavorCraft.dart'; // Импортируем экран FlavorCraft
+import 'FlavorCraft.dart';
 
 class RegistrationScreen extends StatelessWidget {
-  final _formKey = GlobalKey<FormState>(); // Ключ для формы
+  final _formKey = GlobalKey<FormState>();
 
   void _showSuccessSnackBar(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           'Аккаунт успешно создан!',
-          style: TextStyle(fontFamily: 'Montserrat'), // Используем Montserrat
+          style: TextStyle(fontFamily: 'Montserrat'),
         ),
         duration: Duration(seconds: 2),
       ),
@@ -19,24 +19,22 @@ class RegistrationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Светлый фон
+      backgroundColor: Colors.white,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Form(
-            key: _formKey, // Добавляем ключ для формы
+            key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Логотип или изображение
                 Icon(
-                  Icons.email, // Иконка для регистрации
+                  Icons.email,
                   size: 100,
                   color: Colors.black54,
                 ),
                 SizedBox(height: 20),
-                // Заголовок
                 Text(
                   'Создать аккаунт',
                   style: TextStyle(
@@ -49,17 +47,16 @@ class RegistrationScreen extends StatelessWidget {
                 SizedBox(height: 10),
                 SizedBox(height: 40),
                 // Поля ввода
-                _buildTextField('Почта', context), // Добавили контекст
+                _buildTextField('Почта', context),
                 SizedBox(height: 16),
-                _buildTextField('Пароль', context, obscureText: true), // Добавили контекст
+                _buildTextField('Пароль', context, obscureText: true),
                 SizedBox(height: 16),
-                _buildTextField('Подтверждение пароля', context, obscureText: true), // Добавили контекст
+                _buildTextField('Подтверждение пароля', context, obscureText: true),
                 SizedBox(height: 30),
-                // Кнопка создания аккаунта
                 ElevatedButton(
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) { // Валидация формы
-                      _showSuccessSnackBar(context); // Отображение SnackBar
+                    if (_formKey.currentState!.validate()) {
+                      _showSuccessSnackBar(context);
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => FlavorCraft()),
@@ -67,11 +64,11 @@ class RegistrationScreen extends StatelessWidget {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue, // Синий фон
+                    backgroundColor: Colors.blue,
                     padding: EdgeInsets.symmetric(vertical: 16),
-                    minimumSize: Size(double.infinity, 50), // Растягиваем кнопку на всю ширину
+                    minimumSize: Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // Углы округлые
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   child: Text(

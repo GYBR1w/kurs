@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'RecipeDetailScreen.dart'; // Импортируем экран деталей
+import 'RecipeDetailScreen.dart';
 
 class Recipe {
   final String title;
   final String description;
   final String imageUrl;
-  final List<String> ingredients; // Список ингредиентов
-  final String instructions; // Инструкции по приготовлению
+  final List<String> ingredients;
+  final String instructions;
 
   Recipe({
     required this.title,
@@ -27,7 +27,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
     Recipe(
       title: 'Спагетти Карбонара',
       description: 'Классическое итальянское блюдо из спагетти с соусом на основе яиц и сыра, с добавлением панчетты.',
-      imageUrl: 'https://eda.ru/images/RecipeOpenGraph/1200x630/pasta-karbonara-pasta-alla-carbonara_50865_ogimage.jpg', // Замените на реальный URL изображения
+      imageUrl: 'https://eda.ru/images/RecipeOpenGraph/1200x630/pasta-karbonara-pasta-alla-carbonara_50865_ogimage.jpg',
       ingredients: ['Спагетти (400 г)', 'Панчетта (150 г)', 'Яйцо (2 шт.)', 'Пармезан (50 г)', 'Чёрный перец (по вкусу)', 'Соль (по вкусу)'],
       instructions: '1. Отварите спагетти в большом количестве подсоленной воды до состояния аль денте.\n2. Нарежьте панчетту мелкими кубиками и обжарьте на сковороде до золотистой корочки.\n3. В отдельной миске взбейте яйца с тертым пармезаном и чёрным перцем.\n4. Когда спагетти будут готовы, слейте воду и быстро добавьте их в сковороду с панчеттой.\n5. Снимите с огня и сразу же добавьте яичную смесь, хорошо перемешивая.\n6. Подавайте с дополнительным тертым пармезаном и чёрным перцем по вкусу.',
     ),
@@ -92,14 +92,17 @@ class _RecipeScreenState extends State<RecipeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Рецепты'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: _showAddRecipeDialog,
+        title: const Text(
+          'Рецепты',
+          style: TextStyle(
+            fontFamily: 'Montserrat',
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
-        ],
+        ),
       ),
+
+      backgroundColor: Colors.white,
       body: ListView.builder(
         itemCount: recipes.length,
         itemBuilder: (context, index) {

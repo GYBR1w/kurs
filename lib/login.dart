@@ -1,31 +1,29 @@
 import 'package:flutter/material.dart';
-import 'FlavorCraft.dart'; // Импортируем экран FlavorCraft
-import 'unlogin.dart'; // Импортируем экран UnloginScreen
+import 'FlavorCraft.dart';
+import 'unlogin.dart';
 
 class LoginScreen extends StatelessWidget {
-  final _formKey = GlobalKey<FormState>(); // Ключ для формы
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Светлый фон
+      backgroundColor: Colors.white,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Form(
-            key: _formKey, // Добавляем ключ для формы
+            key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Логотип или изображение
                 Icon(
-                  Icons.login, // Иконка для входа
+                  Icons.login,
                   size: 100,
                   color: Colors.black54,
                 ),
                 SizedBox(height: 20),
-                // Заголовок
                 Text(
                   'Войти',
                   style: TextStyle(
@@ -37,16 +35,13 @@ class LoginScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 10),
                 SizedBox(height: 40),
-                // Поля ввода
                 _buildTextField('Почта'),
                 SizedBox(height: 16),
                 _buildTextField('Пароль', obscureText: true),
                 SizedBox(height: 30),
-                // Кнопка входа
                 ElevatedButton(
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) { // Валидация формы
-                      // Переход на экран FlavorCraft
+                    if (_formKey.currentState!.validate()) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => FlavorCraft()),
@@ -54,11 +49,11 @@ class LoginScreen extends StatelessWidget {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue, // Синий фон
+                    backgroundColor: Colors.blue,
                     padding: EdgeInsets.symmetric(vertical: 16),
-                    minimumSize: Size(double.infinity, 50), // Растягиваем кнопку на всю ширину
+                    minimumSize: Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // Углы округлые
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   child: Text(
@@ -96,7 +91,7 @@ class LoginScreen extends StatelessWidget {
       obscureText: obscureText,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Пожалуйста, заполните это поле'; // Сообщение об ошибке
+          return 'Пожалуйста, заполните это поле';
         }
         return null;
       },

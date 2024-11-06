@@ -27,30 +27,32 @@ class _FlavorCraftState extends State<FlavorCraft> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Белый фон
-      body: _widgetOptions.elementAt(_selectedIndex), // Отображаем соответствующий контент
+      backgroundColor: Colors.white,
+      body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: Colors.black), // Иконка дома
+            icon: Icon(Icons.home, color: Colors.black),
             label: 'Главное',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search, color: Colors.black), // Иконка поиска
+            icon: Icon(Icons.search, color: Colors.black),
             label: 'Поиск',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite, color: Colors.black), // Иконка избранного
+            icon: Icon(Icons.favorite, color: Colors.black),
             label: 'Избранное',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person, color: Colors.black), // Иконка профиля
+            icon: Icon(Icons.person, color: Colors.black),
             label: 'Профиль',
           ),
         ],
-        currentIndex: _selectedIndex, // Устанавливаем текущий индекс
-        selectedItemColor: Colors.blueAccent, // Цвет выбранного элемента
-        onTap: _onItemTapped, // Обработчик нажатий
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.blueAccent,
+        selectedLabelStyle: TextStyle(fontFamily: 'Montserrat', fontSize: 12, fontWeight: FontWeight.w600),
+        unselectedLabelStyle: TextStyle(fontFamily: 'Montserrat', fontSize: 12),
+        onTap: _onItemTapped,
       ),
     );
   }

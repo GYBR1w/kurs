@@ -11,7 +11,7 @@ class RecipeDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(recipe.title, style: TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white, // Цвет фона AppBar
+        backgroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -20,7 +20,7 @@ class RecipeDetailScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(10), // Закругленные углы
+                borderRadius: BorderRadius.circular(10),
                 child: Image.network(recipe.imageUrl),
               ),
               const SizedBox(height: 16.0),

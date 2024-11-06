@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: FlavorCraft(), // Начинаем с экрана входа
+        home: FlavorCraft(),
       ),
     );
   }
