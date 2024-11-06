@@ -101,7 +101,6 @@ class _RecipeScreenState extends State<RecipeScreen> {
           ),
         ),
       ),
-
       backgroundColor: Colors.white,
       body: ListView.builder(
         itemCount: recipes.length,
@@ -124,6 +123,11 @@ class _RecipeScreenState extends State<RecipeScreen> {
             ),
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showAddRecipeDialog,
+        child: Icon(Icons.add),
+        tooltip: 'Добавить рецепт',
       ),
     );
   }
