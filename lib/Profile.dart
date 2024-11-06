@@ -13,60 +13,70 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
+  final _nameController = TextEditingController(text: 'Имя пользователя');
+  final _emailController = TextEditingController(text: 'email@example.com');
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
-    final userProfile = Provider.of<UserProfile>(context, listen: false);
-    _nameController.text = userProfile.name;
-    _emailController.text = userProfile.email;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final userProfile = Provider.of<UserProfile>(context, listen: false);
+      if (userProfile.name.isNotEmpty) _nameController.text = userProfile.name;
+      if (userProfile.email.isNotEmpty) _emailController.text = userProfile.email;
+    });
   }
 
-  void _showEditDialog(BuildContext context) {
-    showDialog(
+  Future<void> _showEditDialog(BuildContext context) async {
+    return showDialog<void>(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Редактировать профиль'),
-          content: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                TextFormField(
-                  controller: _nameController,
-                  decoration: InputDecoration(labelText: 'Имя'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Пожалуйста, введите имя';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  controller: _emailController,
-                  decoration: InputDecoration(labelText: 'Email'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Пожалуйста, введите email';
-                    }
-                    return null;
-                  },
-                ),
-              ],
+          title: const Text('Редактировать профиль'),
+          content: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  TextFormField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(labelText: 'Имя'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Пожалуйста, введите имя';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: _emailController,
+                    decoration: const InputDecoration(labelText: 'Email'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Пожалуйста, введите email';
+                      }
+                      return null;
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Отмена'),
+              child: const Text('Отмена'),
               onPressed: () {
                 Navigator.of(context).pop();
+                setState(() {
+                  _nameController.text = Provider.of<UserProfile>(context, listen: false).name.isNotEmpty ? Provider.of<UserProfile>(context, listen: false).name : 'Имя пользователя';
+                  _emailController.text = Provider.of<UserProfile>(context, listen: false).email.isNotEmpty ? Provider.of<UserProfile>(context, listen: false).email : 'email@example.com';
+                });
               },
             ),
             TextButton(
-              child: Text('Сохранить'),
+              child: const Text('Сохранить'),
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   final userProfile = Provider.of<UserProfile>(context, listen: false);
@@ -82,126 +92,88 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void _showAvatarOptions(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          padding: EdgeInsets.all(16.0),
-          child: Wrap(
-            children: <Widget>[
-              ListTile(
-                leading: Icon(Icons.photo),
-                title: Text('Посмотреть фото'),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => ImageViewerScreen(image: Provider.of<UserProfile>(context, listen: false).avatarImage),
-                    ),
-                  );
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.camera_alt),
-                title: Text('Изменить фото'),
-                onTap: () async {
-                  ImagePicker picker = ImagePicker();
-                  final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-                  if (pickedFile != null) {
-                    final userProfile = Provider.of<UserProfile>(context, listen: false);
-                    userProfile.updateAvatar(File(pickedFile.path));
-                  }
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
+  Future<void> _pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      final userProfile = Provider.of<UserProfile>(context, listen: false);
+      userProfile.updateAvatar(File(image.path));
+    }
   }
 
   void _logout() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => UnloginScreen()),
-    );
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => UnloginScreen()));
   }
 
   @override
   Widget build(BuildContext context) {
     final userProfile = Provider.of<UserProfile>(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Профиль',
-          style: TextStyle(color: Colors.black),
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Профиль'),
+          backgroundColor: Colors.white, // Белый AppBar
         ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
-      body: Container(
-        color: Colors.white,
-        child: Center(
+        backgroundColor: Colors.white, // Белый фон
+        body: Center(
           child: Padding(
             padding: const EdgeInsets.all(24.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
+              children: <Widget>[
                 GestureDetector(
-                  onTap: () => _showAvatarOptions(context),
+                  onTap: _pickImage,
                   child: CircleAvatar(
                     radius: 50,
+                    backgroundColor: Colors.grey[300],
                     backgroundImage: userProfile.avatarImage != null
                         ? (kIsWeb ? NetworkImage(userProfile.avatarImage!.path) : FileImage(userProfile.avatarImage!))
-                        : NetworkImage(''), // Замените на URL вашей картинки по умолчанию
+                        : null,
+                    child: userProfile.avatarImage == null
+                        ? const Icon(Icons.person, size: 50, color: Colors.grey)
+                        : null,
                   ),
                 ),
-                SizedBox(height: 20),
-                Text(
-                  userProfile.name,
-                  style: TextStyle(fontSize: 24),
-                ),
-                SizedBox(height: 5),
-                Text(
-                  userProfile.email,
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
-                ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
+                Text(userProfile.name.isNotEmpty ? userProfile.name : 'Имя пользователя', style: const TextStyle(fontSize: 24)),
+                const SizedBox(height: 5),
+                Text(userProfile.email.isNotEmpty ? userProfile.email : 'email@example.com', style: const TextStyle(fontSize: 16, color: Colors.grey)),
+                const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () => _showEditDialog(context), // Кнопка для редактирования профиля
-                  child: Text('Редактировать профиль'),
+                  onPressed: () => _showEditDialog(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue, // Синий фон
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    minimumSize: Size(double.infinity, 50), // Растягиваем кнопку на всю ширину
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10), // Увеличиваем радиус закругления
+                    ),
+                  ),
+                  child: const Text(
+                    'Редактировать профиль',
+                    style: TextStyle(fontSize: 18, fontFamily: 'Montserrat', color: Colors.white),
+                  ),
                 ),
-                SizedBox(height: 20),
-                ElevatedButton(
+                const SizedBox(height: 20),
+                OutlinedButton(
                   onPressed: _logout,
-                  child: Text('Выйти'),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: Colors.black), // Черная обводка
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10), // Увеличиваем радиус закругления
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    minimumSize: Size(double.infinity, 50), // Растягиваем кнопку на всю ширину
+                  ),
+                  child: const Text(
+                    'Выйти',
+                    style: TextStyle(fontSize: 18, fontFamily: 'Montserrat', color: Colors.black),
+                  ),
                 ),
               ],
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class ImageViewerScreen extends StatelessWidget {
-  final File? image;
-
-  ImageViewerScreen({required this.image});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Просмотр фото'),
-      ),
-      body: Center(
-        child: image != null
-            ? (kIsWeb ? Image.network(image!.path) : Image.file(image!))
-            : Text('Нет изображения'),
       ),
     );
   }
