@@ -1,41 +1,104 @@
 import 'package:flutter/material.dart';
+import 'RecipeDetailScreen.dart'; // Импортируем экран деталей
 
 class Recipe {
   final String title;
   final String description;
   final String imageUrl;
+  final List<String> ingredients; // Список ингредиентов
+  final String instructions; // Инструкции по приготовлению
 
-  Recipe({required this.title, required this.description, required this.imageUrl});
+  Recipe({
+    required this.title,
+    required this.description,
+    required this.imageUrl,
+    required this.ingredients,
+    required this.instructions,
+  });
 }
 
-class RecipeScreen extends StatelessWidget {
-  // Пример списка рецептов
+class RecipeScreen extends StatefulWidget {
+  @override
+  _RecipeScreenState createState() => _RecipeScreenState();
+}
+
+class _RecipeScreenState extends State<RecipeScreen> {
   final List<Recipe> recipes = [
     Recipe(
-      title: 'Рецепт 1',
-      description: 'Описание рецепта 1',
-      imageUrl: 'https://via.placeholder.com/150', // Замените на реальные URL изображений
-    ),
-    Recipe(
-      title: 'Рецепт 2',
-      description: 'Описание рецепта 2',
-      imageUrl: 'https://via.placeholder.com/150',
-    ),
-    Recipe(
-      title: 'Рецепт 3',
-      description: 'Описание рецепта 3',
-      imageUrl: 'https://via.placeholder.com/150',
+      title: 'Спагетти Карбонара',
+      description: 'Классическое итальянское блюдо из спагетти с соусом на основе яиц и сыра, с добавлением панчетты.',
+      imageUrl: 'https://eda.ru/images/RecipeOpenGraph/1200x630/pasta-karbonara-pasta-alla-carbonara_50865_ogimage.jpg', // Замените на реальный URL изображения
+      ingredients: ['Спагетти (400 г)', 'Панчетта (150 г)', 'Яйцо (2 шт.)', 'Пармезан (50 г)', 'Чёрный перец (по вкусу)', 'Соль (по вкусу)'],
+      instructions: '1. Отварите спагетти в большом количестве подсоленной воды до состояния аль денте.\n2. Нарежьте панчетту мелкими кубиками и обжарьте на сковороде до золотистой корочки.\n3. В отдельной миске взбейте яйца с тертым пармезаном и чёрным перцем.\n4. Когда спагетти будут готовы, слейте воду и быстро добавьте их в сковороду с панчеттой.\n5. Снимите с огня и сразу же добавьте яичную смесь, хорошо перемешивая.\n6. Подавайте с дополнительным тертым пармезаном и чёрным перцем по вкусу.',
     ),
   ];
+
+  void _addRecipe(String title, String description, String imageUrl, List<String> ingredients, String instructions) {
+    setState(() {
+      recipes.add(Recipe(
+        title: title,
+        description: description,
+        imageUrl: imageUrl,
+        ingredients: ingredients,
+        instructions: instructions,
+      ));
+    });
+  }
+
+  Future<void> _showAddRecipeDialog() async {
+    final TextEditingController titleController = TextEditingController();
+    final TextEditingController descriptionController = TextEditingController();
+    final TextEditingController imageUrlController = TextEditingController();
+    final TextEditingController ingredientsController = TextEditingController();
+    final TextEditingController instructionsController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Добавить новый рецепт'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(controller: titleController, decoration: InputDecoration(labelText: 'Название')),
+              TextField(controller: descriptionController, decoration: InputDecoration(labelText: 'Описание')),
+              TextField(controller: imageUrlController, decoration: InputDecoration(labelText: 'URL изображения')),
+              TextField(controller: ingredientsController, decoration: InputDecoration(labelText: 'Ингредиенты (через запятую)')),
+              TextField(controller: instructionsController, decoration: InputDecoration(labelText: 'Инструкции')),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                final ingredients = ingredientsController.text.split(',').map((s) => s.trim()).toList();
+                _addRecipe(
+                  titleController.text,
+                  descriptionController.text,
+                  imageUrlController.text,
+                  ingredients,
+                  instructionsController.text,
+                );
+                Navigator.of(context).pop();
+              },
+              child: Text('Добавить'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Белый фон экрана рецептов
       appBar: AppBar(
         title: const Text('Рецепты'),
-        backgroundColor: Colors.white, // Белый фон для AppBar
-        iconTheme: IconThemeData(color: Colors.black), // Черные иконки в AppBar
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: _showAddRecipeDialog,
+          ),
+        ],
       ),
       body: ListView.builder(
         itemCount: recipes.length,
@@ -48,7 +111,12 @@ class RecipeScreen extends StatelessWidget {
               title: Text(recipe.title),
               subtitle: Text(recipe.description),
               onTap: () {
-                // Здесь можно реализовать переход на экран деталей рецепта
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RecipeDetailScreen(recipe: recipe),
+                  ),
+                );
               },
             ),
           );

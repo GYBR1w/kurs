@@ -49,7 +49,7 @@ class _FlavorCraftState extends State<FlavorCraft> {
           ),
         ],
         currentIndex: _selectedIndex, // Устанавливаем текущий индекс
-        selectedItemColor: Colors.blue, // Цвет выбранного элемента
+        selectedItemColor: Colors.blueAccent, // Цвет выбранного элемента
         onTap: _onItemTapped, // Обработчик нажатий
       ),
     );

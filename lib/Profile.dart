@@ -13,7 +13,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController(text: 'Имя пользователя');
+  final _nameController = TextEditingController(text: 'Имя пользователя',);
   final _emailController = TextEditingController(text: 'email@example.com');
   final ImagePicker _picker = ImagePicker();
 
@@ -135,9 +135,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Text(userProfile.name.isNotEmpty ? userProfile.name : 'Имя пользователя', style: const TextStyle(fontSize: 24)),
+                Text(userProfile.name.isNotEmpty ? userProfile.name : 'Имя пользователя', style: const TextStyle(fontSize: 24, fontFamily: 'Montserrat',)),
                 const SizedBox(height: 5),
-                Text(userProfile.email.isNotEmpty ? userProfile.email : 'email@example.com', style: const TextStyle(fontSize: 16, color: Colors.grey)),
+                Text(userProfile.email.isNotEmpty ? userProfile.email : 'email@example.com', style: const TextStyle(fontSize: 16, fontFamily: 'Montserrat', color: Colors.grey)),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () => _showEditDialog(context),
