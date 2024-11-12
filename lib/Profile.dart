@@ -13,7 +13,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController(text: 'Имя пользователя',);
+  final _nameController = TextEditingController(text: 'Имя пользователя');
   final _emailController = TextEditingController(text: 'email@example.com');
   final ImagePicker _picker = ImagePicker();
 
@@ -108,77 +108,64 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final userProfile = Provider.of<UserProfile>(context);
 
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Профиль',
-            style: TextStyle(
-              fontFamily: 'Montserrat',
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-
-        backgroundColor: Colors.white,
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                GestureDetector(
-                  onTap: _pickImage,
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Colors.grey[300],
-                    backgroundImage: userProfile.avatarImage != null
-                        ? (kIsWeb ? NetworkImage(userProfile.avatarImage!.path) : FileImage(userProfile.avatarImage!))
-                        : null,
-                    child: userProfile.avatarImage == null
-                        ? const Icon(Icons.person, size: 50, color: Colors.grey)
-                        : null,
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              GestureDetector(
+                onTap: _pickImage,
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundColor: Colors.grey[300],
+                  backgroundImage: userProfile.avatarImage != null
+                      ? (kIsWeb ? NetworkImage(userProfile.avatarImage!.path) : FileImage(userProfile.avatarImage!))
+                      : null,
+                  child: userProfile.avatarImage == null
+                      ? const Icon(Icons.person, size: 50, color: Colors.grey)
+                      : null,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(userProfile.name.isNotEmpty ? userProfile.name : 'Имя пользователя', style: const TextStyle(fontSize: 24, fontFamily: 'Montserrat')),
+              const SizedBox(height: 5),
+              Text(userProfile.email.isNotEmpty ? userProfile.email : 'email@example.com', style: const TextStyle(fontSize: 16, fontFamily: 'Montserrat', color: Colors.grey)),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () => _showEditDialog(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  minimumSize: Size(double.infinity, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                const SizedBox(height: 20),
-                Text(userProfile.name.isNotEmpty ? userProfile.name : 'Имя пользователя', style: const TextStyle(fontSize: 24, fontFamily: 'Montserrat',)),
-                const SizedBox(height: 5),
-                Text(userProfile.email.isNotEmpty ? userProfile.email : 'email@example.com', style: const TextStyle(fontSize: 16, fontFamily: 'Montserrat', color: Colors.grey)),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () => _showEditDialog(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    minimumSize: Size(double.infinity, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: const Text(
-                    'Редактировать профиль',
-                    style: TextStyle(fontSize: 18, fontFamily: 'Montserrat', color: Colors.white),
-                  ),
+                child: const Text(
+                  'Редактировать профиль',
+                  style: TextStyle(fontSize: 18, fontFamily: 'Montserrat', color: Colors.white),
                 ),
-                const SizedBox(height: 20),
-                OutlinedButton(
-                  onPressed: _logout,
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: Colors.black),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    minimumSize: Size(double.infinity, 50), //
+              ),
+              const SizedBox(height: 20),
+              OutlinedButton(
+                onPressed: _logout,
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: Colors.black),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Text(
-                    'Выйти',
-                    style: TextStyle(fontSize: 18, fontFamily: 'Montserrat', color: Colors.black),
-                  ),
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  minimumSize: Size(double.infinity, 50),
                 ),
-              ],
-            ),
+                child: const Text(
+                  'Выйти',
+                  style: TextStyle(fontSize: 18, fontFamily: 'Montserrat', color: Colors.black),
+                ),
+              ),
+            ],
           ),
         ),
       ),

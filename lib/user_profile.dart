@@ -48,4 +48,9 @@ class UserProfile extends ChangeNotifier {
   bool isFavorite(Recipe recipe) {
     return favoriteRecipes.contains(recipe);
   }
+
+
+  List<Recipe> getFavoriteRecipes() {
+    return favoriteRecipes;
+  }
 }

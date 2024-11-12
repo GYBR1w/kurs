@@ -33,22 +33,12 @@ class _RecipeScreenState extends State<RecipeScreen> {
       ingredients: ['Спагетти (400 г)', 'Панчетта (150 г)', 'Яйцо (2 шт.)', 'Пармезан (50 г)', 'Чёрный перец (по вкусу)', 'Соль (по вкусу)'],
       instructions: '1. Отварите спагетти...',
     ),
-    // Другие рецепты...
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Рецепты',
-          style: TextStyle(
-            fontFamily: 'Montserrat',
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
+      backgroundColor: Colors.white,
       body: ListView.builder(
         itemCount: recipes.length,
         itemBuilder: (context, index) {
@@ -88,6 +78,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Color.fromRGBO(0, 145, 255, 100),
         onPressed: _showAddRecipeDialog,
         child: Icon(Icons.add),
         tooltip: 'Добавить рецепт',
