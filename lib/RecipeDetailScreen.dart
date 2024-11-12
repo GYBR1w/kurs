@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'RecipeScreen.dart';
+import 'user_profile.dart';
 
 class RecipeDetailScreen extends StatelessWidget {
   final Recipe recipe;
@@ -8,10 +10,27 @@ class RecipeDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userProfile = Provider.of<UserProfile>(context);
+    final isFavorite = userProfile.isFavorite(recipe);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(recipe.title, style: TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: Icon(
+              isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: isFavorite ? Colors.red : Colors.grey,
+            ),
+            onPressed: () {
+              if (isFavorite) {
+                userProfile.removeFavoriteRecipe(recipe);
+              } else {
+                userProfile.addFavoriteRecipe(recipe);
+              }
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
