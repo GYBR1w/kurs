@@ -52,7 +52,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
       description: 'Классическое итальянское блюдо...',
       imageUrl: 'https://eda.ru/images/RecipeOpenGraph/1200x630/pasta-karbonara-pasta-alla-carbonara_50865_ogimage.jpg',
       ingredients: ['Спагетти (400 г)', 'Панчетта (150 г)', 'Яйцо (2 шт.)', 'Пармезан (50 г)', 'Чёрный перец (по вкусу)', 'Соль (по вкусу)'],
-      instructions: '1. Отварите спагетти 2. Добавьте соус 3. Смешайте. ',
+      instructions: '1. Отварите спагетти 2. Добавьте соус 3. Смешайте.',
     ),
     Recipe(
       title: 'Борщ',
@@ -78,7 +78,18 @@ class _RecipeScreenState extends State<RecipeScreen> {
           return Card(
             margin: const EdgeInsets.all(8.0),
             child: ListTile(
-              leading: Image.network(recipe.imageUrl, width: 50, height: 50, fit: BoxFit.cover),
+              leading: Image.network(
+                recipe.imageUrl,
+                width: 50,
+                height: 50,
+                fit: BoxFit.cover,
+                // Обработка ошибки загрузки изображения
+                errorBuilder: (context, error, stackTrace) => Icon(
+                  Icons.broken_image,
+                  color: Colors.grey,
+                  size: 50,
+                ),
+              ),
               title: Text(recipe.title),
               subtitle: Text(recipe.description),
               trailing: IconButton(

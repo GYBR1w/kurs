@@ -1,5 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'RecipeScreen.dart';
 
@@ -14,32 +15,36 @@ class UserProfile extends ChangeNotifier {
     required this.email,
     this.avatarImage,
     List<Recipe>? favoriteRecipes,
-  }) : favoriteRecipes = favoriteRecipes ?? [];
-
-
-  Future<void> loadUserData() async {
-    final prefs = await SharedPreferences.getInstance();
-    name = prefs.getString('name') ?? '';
-    email = prefs.getString('email') ?? '';
-    notifyListeners();
+  }) : favoriteRecipes = favoriteRecipes ?? [] {
+    _loadFavoriteRecipes();
   }
 
-  Future<void> saveUserData() async {
+  Future<void> _loadFavoriteRecipes() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('name', name);
-    prefs.setString('email', email);
+    final String? favoriteRecipesString = prefs.getString('favoriteRecipes');
+
+    if (favoriteRecipesString != null) {
+      final List<dynamic> decoded = json.decode(favoriteRecipesString);
+      favoriteRecipes = decoded.map((jsonItem) => Recipe.fromJson(jsonItem)).toList();
+      notifyListeners();
+    }
+  }
+
+
+  Future<void> _saveFavoriteRecipes() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<Map<String, dynamic>> jsonRecipes = favoriteRecipes.map((recipe) => recipe.toJson()).toList();
+    prefs.setString('favoriteRecipes', json.encode(jsonRecipes));
     notifyListeners();
   }
 
   void updateName(String newName) {
     name = newName;
-    saveUserData();
     notifyListeners();
   }
 
   void updateEmail(String newEmail) {
     email = newEmail;
-    saveUserData();
     notifyListeners();
   }
 
@@ -48,20 +53,24 @@ class UserProfile extends ChangeNotifier {
     notifyListeners();
   }
 
+
   void addFavoriteRecipe(Recipe recipe) {
-    if (!favoriteRecipes.contains(recipe)) {
+    if (!favoriteRecipes.any((item) => item.title == recipe.title)) {
       favoriteRecipes.add(recipe);
+      _saveFavoriteRecipes();
       notifyListeners();
     }
   }
 
+
   void removeFavoriteRecipe(Recipe recipe) {
-    favoriteRecipes.remove(recipe);
+    favoriteRecipes.removeWhere((item) => item.title == recipe.title);
+    _saveFavoriteRecipes();
     notifyListeners();
   }
 
   bool isFavorite(Recipe recipe) {
-    return favoriteRecipes.contains(recipe);
+    return favoriteRecipes.any((item) => item.title == recipe.title);
   }
 
   List<Recipe> getFavoriteRecipes() {

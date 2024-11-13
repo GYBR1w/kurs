@@ -64,7 +64,7 @@ class RegistrationScreen extends StatelessWidget {
                       final userProfile = Provider.of<UserProfile>(context, listen: false);
                       userProfile.updateName(_nameController.text);
                       userProfile.updateEmail(_emailController.text);
-                      userProfile.saveUserData();
+
 
                       _showSuccessSnackBar(context);
                       Navigator.pushReplacement(
