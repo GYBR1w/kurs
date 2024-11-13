@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kurs/unlogin.dart';
 import 'package:provider/provider.dart';
 import 'user_profile.dart';
 import 'FlavorCraft.dart';
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: FlavorCraft(),
+        home: UnloginScreen(),
       ),
     );
   }

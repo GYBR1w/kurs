@@ -13,8 +13,8 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController(text: 'Имя пользователя');
-  final _emailController = TextEditingController(text: 'email@example.com');
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
 
   @override

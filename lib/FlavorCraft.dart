@@ -34,6 +34,7 @@ class _FlavorCraftState extends State<FlavorCraft> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(
           _selectedIndex == 0
               ? 'Рецепты'
