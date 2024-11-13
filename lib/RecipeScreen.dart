@@ -17,6 +17,27 @@ class Recipe {
     required this.ingredients,
     required this.instructions,
   });
+
+  // Метод для преобразования рецепта в JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'description': description,
+      'imageUrl': imageUrl,
+      'ingredients': ingredients,
+      'instructions': instructions,
+    };
+  }
+
+  factory Recipe.fromJson(Map<String, dynamic> json) {
+    return Recipe(
+      title: json['title'],
+      description: json['description'],
+      imageUrl: json['imageUrl'],
+      ingredients: List<String>.from(json['ingredients']),
+      instructions: json['instructions'],
+    );
+  }
 }
 
 class RecipeScreen extends StatefulWidget {
@@ -31,19 +52,27 @@ class _RecipeScreenState extends State<RecipeScreen> {
       description: 'Классическое итальянское блюдо...',
       imageUrl: 'https://eda.ru/images/RecipeOpenGraph/1200x630/pasta-karbonara-pasta-alla-carbonara_50865_ogimage.jpg',
       ingredients: ['Спагетти (400 г)', 'Панчетта (150 г)', 'Яйцо (2 шт.)', 'Пармезан (50 г)', 'Чёрный перец (по вкусу)', 'Соль (по вкусу)'],
-      instructions: '1. Отварите спагетти...',
+      instructions: '1. Отварите спагетти 2. Добавьте соус 3. Смешайте. ',
+    ),
+    Recipe(
+      title: 'Борщ',
+      description: 'Традиционный суп',
+      imageUrl: 'https://eda.ru/images/RecipePhoto/930x622/borsch-s-hrenom_29213_photo_56956.webp',
+      ingredients: ['Свекла (1 шт.)', 'Картофель (3 шт.)', 'Морковь (1 шт.)', 'Лук (1 шт.)', 'Капуста (200 г)'],
+      instructions: '1. Нарезать все ингредиенты 2. Закинуть в кастрюлю. 3. Готово!',
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final userProfile = Provider.of<UserProfile>(context);
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: ListView.builder(
         itemCount: recipes.length,
         itemBuilder: (context, index) {
           final recipe = recipes[index];
-          final userProfile = Provider.of<UserProfile>(context);
           final isFavorite = userProfile.isFavorite(recipe);
 
           return Card(

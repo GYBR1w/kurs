@@ -13,11 +13,10 @@ class FlavorCraft extends StatefulWidget {
 class _FlavorCraftState extends State<FlavorCraft> {
   int _selectedIndex = 0;
 
-
   static List<Widget> _widgetOptions = <Widget>[
     RecipeScreen(),
-    Center(child: Text('Контент для Поиска', style: TextStyle(fontSize: 24))),
-    Center(child: Text('Контент для Избранного', style: TextStyle(fontSize: 24))),
+    Center(child: Text('Поиск', style: TextStyle(fontSize: 24))),
+    Center(child: Text('Избранное', style: TextStyle(fontSize: 24))),
     ProfileScreen(),
   ];
 
@@ -64,7 +63,12 @@ class _FlavorCraftState extends State<FlavorCraft> {
               leading: Image.network(recipe.imageUrl, width: 50, height: 50, fit: BoxFit.cover),
               title: Text(recipe.title),
               subtitle: Text(recipe.description),
-              trailing: Icon(Icons.favorite, color: Colors.red),
+              trailing: IconButton(
+                icon: Icon(Icons.delete, color: Colors.red),
+                onPressed: () {
+                  userProfile.removeFavoriteRecipe(recipe);
+                },
+              ),
               onTap: () {
                 Navigator.push(
                   context,
