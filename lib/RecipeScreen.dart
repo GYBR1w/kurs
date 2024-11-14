@@ -220,11 +220,41 @@ class _RecipeScreenState extends State<RecipeScreen> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(controller: titleController, decoration: InputDecoration(labelText: 'Название')),
-              TextField(controller: descriptionController, decoration: InputDecoration(labelText: 'Описание')),
-              TextField(controller: imageUrlController, decoration: InputDecoration(labelText: 'URL изображения')),
-              TextField(controller: ingredientsController, decoration: InputDecoration(labelText: 'Ингредиенты (через запятую)')),
-              TextField(controller: instructionsController, decoration: InputDecoration(labelText: 'Инструкции')),
+              TextField(
+                controller: titleController,
+                decoration: InputDecoration(
+                  labelText: 'Название',
+                  labelStyle: TextStyle(fontFamily: 'Montserrat'),
+                ),
+              ),
+              TextField(
+                controller: descriptionController,
+                decoration: InputDecoration(
+                  labelText: 'Описание',
+                  labelStyle: TextStyle(fontFamily: 'Montserrat'),
+                ),
+              ),
+              TextField(
+                controller: imageUrlController,
+                decoration: InputDecoration(
+                  labelText: 'URL изображения',
+                  labelStyle: TextStyle(fontFamily: 'Montserrat'),
+                ),
+              ),
+              TextField(
+                controller: ingredientsController,
+                decoration: InputDecoration(
+                  labelText: 'Ингредиенты (через запятую)',
+                  labelStyle: TextStyle(fontFamily: 'Montserrat'),
+                ),
+              ),
+              TextField(
+                controller: instructionsController,
+                decoration: InputDecoration(
+                  labelText: 'Инструкции',
+                  labelStyle: TextStyle(fontFamily: 'Montserrat'),
+                ),
+              ),
             ],
           ),
           actions: [
