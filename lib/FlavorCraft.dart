@@ -61,7 +61,17 @@ class _FlavorCraftState extends State<FlavorCraft> {
           return Card(
             margin: const EdgeInsets.all(8.0),
             child: ListTile(
-              leading: Image.network(recipe.imageUrl, width: 50, height: 50, fit: BoxFit.cover),
+              leading: Image.network(
+                recipe.imageUrl,
+                width: 50,
+                height: 50,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Icon(
+                  Icons.broken_image,
+                  color: Colors.grey,
+                  size: 50,
+                ),
+              ),
               title: Text(recipe.title),
               subtitle: Text(recipe.description),
               trailing: IconButton(
