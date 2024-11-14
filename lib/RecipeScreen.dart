@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'RecipeDetailScreen.dart';
 import 'user_profile.dart';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Recipe {
   final String title;
@@ -18,7 +20,6 @@ class Recipe {
     required this.instructions,
   });
 
-  // Метод для преобразования рецепта в JSON
   Map<String, dynamic> toJson() {
     return {
       'title': title,
@@ -46,22 +47,51 @@ class RecipeScreen extends StatefulWidget {
 }
 
 class _RecipeScreenState extends State<RecipeScreen> {
-  final List<Recipe> recipes = [
-    Recipe(
-      title: 'Спагетти Карбонара',
-      description: 'Классическое итальянское блюдо...',
-      imageUrl: 'https://eda.ru/images/RecipeOpenGraph/1200x630/pasta-karbonara-pasta-alla-carbonara_50865_ogimage.jpg',
-      ingredients: ['Спагетти (400 г)', 'Панчетта (150 г)', 'Яйцо (2 шт.)', 'Пармезан (50 г)', 'Чёрный перец (по вкусу)', 'Соль (по вкусу)'],
-      instructions: '1. Отварите спагетти 2. Добавьте соус 3. Смешайте.',
-    ),
-    Recipe(
-      title: 'Борщ',
-      description: 'Традиционный суп',
-      imageUrl: 'https://eda.ru/images/RecipePhoto/930x622/borsch-s-hrenom_29213_photo_56956.webp',
-      ingredients: ['Свекла (1 шт.)', 'Картофель (3 шт.)', 'Морковь (1 шт.)', 'Лук (1 шт.)', 'Капуста (200 г)'],
-      instructions: '1. Нарезать все ингредиенты 2. Закинуть в кастрюлю. 3. Готово!',
-    ),
-  ];
+  List<Recipe> recipes = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRecipes();
+  }
+
+  Future<void> _loadRecipes() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? recipesString = prefs.getString('recipes');
+
+    if (recipesString != null) {
+      final List<dynamic> decoded = json.decode(recipesString);
+      setState(() {
+        recipes = decoded.map((jsonItem) => Recipe.fromJson(jsonItem)).toList();
+      });
+    } else {
+      setState(() {
+        recipes = [
+          Recipe(
+            title: 'Спагетти Карбонара',
+            description: 'Классическое итальянское блюдо...',
+            imageUrl: 'https://eda.ru/images/RecipeOpenGraph/1200x630/pasta-karbonara-pasta-alla-carbonara_50865_ogimage.jpg',
+            ingredients: ['Спагетти (400 г)', 'Панчетта (150 г)', 'Яйцо (2 шт.)', 'Пармезан (50 г)', 'Чёрный перец (по вкусу)', 'Соль (по вкусу)'],
+            instructions: '1. Отварите спагетти 2. Добавьте соус 3. Смешайте.',
+          ),
+          Recipe(
+            title: 'Борщ',
+            description: 'Традиционный суп',
+            imageUrl: 'https://eda.ru/images/RecipePhoto/930x622/borsch-s-hrenom_29213_photo_56956.webp',
+            ingredients: ['Свекла (1 шт.)', 'Картофель (3 шт.)', 'Морковь (1 шт.)', 'Лук (1 шт.)', 'Капуста (200 г)'],
+            instructions: '1. Нарезать все ингредиенты 2. Закинуть в кастрюлю. 3. Готово!',
+          ),
+        ];
+        _saveRecipes();
+      });
+    }
+  }
+
+  Future<void> _saveRecipes() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<Map<String, dynamic>> jsonRecipes = recipes.map((recipe) => recipe.toJson()).toList();
+    prefs.setString('recipes', json.encode(jsonRecipes));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +113,6 @@ class _RecipeScreenState extends State<RecipeScreen> {
                 width: 50,
                 height: 50,
                 fit: BoxFit.cover,
-                // Обработка ошибки загрузки изображения
                 errorBuilder: (context, error, stackTrace) => Icon(
                   Icons.broken_image,
                   color: Colors.grey,
@@ -160,6 +189,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
                     ingredients: ingredients,
                     instructions: instructionsController.text,
                   ));
+                  _saveRecipes();
                 });
                 Navigator.of(context).pop();
               },
