@@ -48,7 +48,7 @@ class RecipeScreen extends StatefulWidget {
 
 class _RecipeScreenState extends State<RecipeScreen> {
   List<Recipe> recipes = [];
-  String _searchQuery = ''; // Строка для поиска
+  String _searchQuery = '';
 
   @override
   void initState() {
@@ -94,7 +94,6 @@ class _RecipeScreenState extends State<RecipeScreen> {
     prefs.setString('recipes', json.encode(jsonRecipes));
   }
 
-  // Фильтрация рецептов по запросу поиска
   List<Recipe> _filteredRecipes() {
     if (_searchQuery.isEmpty) {
       return recipes;
@@ -129,7 +128,6 @@ class _RecipeScreenState extends State<RecipeScreen> {
       ),
       body: Column(
         children: [
-          // Поле для поиска
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(
@@ -255,7 +253,6 @@ class _RecipeScreenState extends State<RecipeScreen> {
   }
 }
 
-// Для улучшения поиска, можно использовать SearchDelegate
 class RecipeSearchDelegate extends SearchDelegate {
   @override
   List<Widget>? buildActions(BuildContext context) {
@@ -263,7 +260,7 @@ class RecipeSearchDelegate extends SearchDelegate {
       IconButton(
         icon: Icon(Icons.clear),
         onPressed: () {
-          query = ''; // Очистка поиска
+          query = '';
         },
       ),
     ];
@@ -274,7 +271,7 @@ class RecipeSearchDelegate extends SearchDelegate {
     return IconButton(
       icon: Icon(Icons.arrow_back),
       onPressed: () {
-        close(context, null); // Закрытие поиска
+        close(context, null);
       },
     );
   }

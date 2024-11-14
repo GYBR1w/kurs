@@ -15,7 +15,6 @@ class _FlavorCraftState extends State<FlavorCraft> {
 
   static List<Widget> _widgetOptions = <Widget>[
     RecipeScreen(),
-    Center(child: Text('Поиск', style: TextStyle(fontSize: 24))),
     Center(child: Text('Избранное', style: TextStyle(fontSize: 24))),
     ProfileScreen(),
   ];
@@ -37,9 +36,9 @@ class _FlavorCraftState extends State<FlavorCraft> {
           ? AppBar(
         automaticallyImplyLeading: false,
         title: Text(
-          _selectedIndex == 2
+          _selectedIndex == 1
               ? 'Избранное'
-              : _selectedIndex == 3
+              : _selectedIndex == 2
               ? 'Профиль'
               : '',
           style: TextStyle(
@@ -52,8 +51,8 @@ class _FlavorCraftState extends State<FlavorCraft> {
         elevation: 0,
         centerTitle: true,
       )
-          : null, // Убираем AppBar на экране "Рецепты"
-      body: _selectedIndex == 2
+          : null,
+      body: _selectedIndex == 1
           ? ListView.builder(
         itemCount: favoriteRecipes.length,
         itemBuilder: (context, index) {
@@ -92,7 +91,7 @@ class _FlavorCraftState extends State<FlavorCraft> {
           );
         },
       )
-          : _widgetOptions.elementAt(_selectedIndex),
+          : _widgetOptions.elementAt(_selectedIndex), // Остальные экраны
 
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
@@ -106,10 +105,6 @@ class _FlavorCraftState extends State<FlavorCraft> {
             backgroundColor: Colors.white,
             icon: Icon(Icons.home),
             label: 'Рецепты',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Поиск',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
