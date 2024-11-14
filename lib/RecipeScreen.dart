@@ -123,8 +123,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
-        actions: [
-        ],
+        actions: [],
       ),
       body: Column(
         children: [
@@ -137,7 +136,8 @@ class _RecipeScreenState extends State<RecipeScreen> {
                 });
               },
               decoration: InputDecoration(
-                hintText: 'Поиск рецептов...', suffixStyle: TextStyle(fontFamily: 'Montserrat',),
+                hintText: 'Поиск рецептов...',
+                hintStyle: TextStyle(fontFamily: 'Montserrat'),
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -145,7 +145,6 @@ class _RecipeScreenState extends State<RecipeScreen> {
               ),
             ),
           ),
-          // Отображение рецептов после фильтрации
           Expanded(
             child: ListView.builder(
               itemCount: _filteredRecipes().length,
@@ -167,8 +166,8 @@ class _RecipeScreenState extends State<RecipeScreen> {
                         size: 50,
                       ),
                     ),
-                    title: Text(recipe.title),
-                    subtitle: Text(recipe.description),
+                    title: Text(recipe.title, style: TextStyle(fontFamily: 'Montserrat')),
+                    subtitle: Text(recipe.description, style: TextStyle(fontFamily: 'Montserrat')),
                     trailing: IconButton(
                       icon: Icon(
                         isFavorite ? Icons.favorite : Icons.favorite_border,
@@ -244,7 +243,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
                 });
                 Navigator.of(context).pop();
               },
-              child: Text('Добавить'),
+              child: Text('Добавить', style: TextStyle(fontFamily: 'Montserrat')),
             ),
           ],
         );
@@ -289,8 +288,8 @@ class RecipeSearchDelegate extends SearchDelegate {
       itemBuilder: (context, index) {
         final recipe = filteredRecipes[index];
         return ListTile(
-          title: Text(recipe.title),
-          subtitle: Text(recipe.description),
+          title: Text(recipe.title, style: TextStyle(fontFamily: 'Montserrat')),
+          subtitle: Text(recipe.description, style: TextStyle(fontFamily: 'Montserrat')),
           onTap: () {
             Navigator.push(
               context,

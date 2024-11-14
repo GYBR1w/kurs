@@ -15,7 +15,7 @@ class _FlavorCraftState extends State<FlavorCraft> {
 
   static List<Widget> _widgetOptions = <Widget>[
     RecipeScreen(),
-    Center(child: Text('Избранное', style: TextStyle(fontSize: 24))),
+    Center(child: Text('Избранное', style: TextStyle(fontFamily: 'Montserrat', fontSize: 24))),
     ProfileScreen(),
   ];
 
@@ -71,8 +71,8 @@ class _FlavorCraftState extends State<FlavorCraft> {
                   size: 50,
                 ),
               ),
-              title: Text(recipe.title),
-              subtitle: Text(recipe.description),
+              title: Text(recipe.title, style: TextStyle(fontFamily: 'Montserrat')),
+              subtitle: Text(recipe.description, style: TextStyle(fontFamily: 'Montserrat')),
               trailing: IconButton(
                 icon: Icon(Icons.delete, color: Colors.red),
                 onPressed: () {
@@ -91,15 +91,15 @@ class _FlavorCraftState extends State<FlavorCraft> {
           );
         },
       )
-          : _widgetOptions.elementAt(_selectedIndex), // Остальные экраны
+          : _widgetOptions.elementAt(_selectedIndex),
 
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.black,
-        selectedLabelStyle: TextStyle(color: Colors.blue),
-        unselectedLabelStyle: TextStyle(color: Colors.blue),
+        selectedLabelStyle: TextStyle(fontFamily: 'Montserrat', color: Colors.blue),
+        unselectedLabelStyle: TextStyle(fontFamily: 'Montserrat', color: Colors.blue),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             backgroundColor: Colors.white,
