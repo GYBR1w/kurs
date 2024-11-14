@@ -137,7 +137,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
                 });
               },
               decoration: InputDecoration(
-                hintText: 'Поиск рецептов...',
+                hintText: 'Поиск рецептов...', suffixStyle: TextStyle(fontFamily: 'Montserrat',),
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -217,7 +217,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Добавить новый рецепт'),
+          title: Text('Добавить новый рецепт', style: TextStyle(fontFamily: 'Montserrat',),),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -306,6 +306,6 @@ class RecipeSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return Center(child: Text("Введите название рецепта для поиска"));
+    return Center(child: Text("Введите название рецепта для поиска", style: TextStyle(fontFamily: 'Montserrat',),));
   }
 }
