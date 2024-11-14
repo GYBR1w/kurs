@@ -48,6 +48,7 @@ class RecipeScreen extends StatefulWidget {
 
 class _RecipeScreenState extends State<RecipeScreen> {
   List<Recipe> recipes = [];
+  String _searchQuery = ''; // Строка для поиска
 
   @override
   void initState() {
@@ -93,58 +94,110 @@ class _RecipeScreenState extends State<RecipeScreen> {
     prefs.setString('recipes', json.encode(jsonRecipes));
   }
 
+  // Фильтрация рецептов по запросу поиска
+  List<Recipe> _filteredRecipes() {
+    if (_searchQuery.isEmpty) {
+      return recipes;
+    }
+    return recipes.where((recipe) {
+      return recipe.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          recipe.description.toLowerCase().contains(_searchQuery.toLowerCase());
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     final userProfile = Provider.of<UserProfile>(context);
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: ListView.builder(
-        itemCount: recipes.length,
-        itemBuilder: (context, index) {
-          final recipe = recipes[index];
-          final isFavorite = userProfile.isFavorite(recipe);
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text(
+          'Рецепты',
+          style: TextStyle(
+            fontFamily: 'Montserrat',
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+        actions: [
+        ],
+      ),
+      body: Column(
+        children: [
+          // Поле для поиска
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              onChanged: (query) {
+                setState(() {
+                  _searchQuery = query;
+                });
+              },
+              decoration: InputDecoration(
+                hintText: 'Поиск рецептов...',
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+          ),
+          // Отображение рецептов после фильтрации
+          Expanded(
+            child: ListView.builder(
+              itemCount: _filteredRecipes().length,
+              itemBuilder: (context, index) {
+                final recipe = _filteredRecipes()[index];
+                final isFavorite = userProfile.isFavorite(recipe);
 
-          return Card(
-            margin: const EdgeInsets.all(8.0),
-            child: ListTile(
-              leading: Image.network(
-                recipe.imageUrl,
-                width: 50,
-                height: 50,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Icon(
-                  Icons.broken_image,
-                  color: Colors.grey,
-                  size: 50,
-                ),
-              ),
-              title: Text(recipe.title),
-              subtitle: Text(recipe.description),
-              trailing: IconButton(
-                icon: Icon(
-                  isFavorite ? Icons.favorite : Icons.favorite_border,
-                  color: isFavorite ? Colors.red : Colors.grey,
-                ),
-                onPressed: () {
-                  if (isFavorite) {
-                    userProfile.removeFavoriteRecipe(recipe);
-                  } else {
-                    userProfile.addFavoriteRecipe(recipe);
-                  }
-                },
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => RecipeDetailScreen(recipe: recipe),
+                return Card(
+                  margin: const EdgeInsets.all(8.0),
+                  child: ListTile(
+                    leading: Image.network(
+                      recipe.imageUrl,
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Icon(
+                        Icons.broken_image,
+                        color: Colors.grey,
+                        size: 50,
+                      ),
+                    ),
+                    title: Text(recipe.title),
+                    subtitle: Text(recipe.description),
+                    trailing: IconButton(
+                      icon: Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: isFavorite ? Colors.red : Colors.grey,
+                      ),
+                      onPressed: () {
+                        if (isFavorite) {
+                          userProfile.removeFavoriteRecipe(recipe);
+                        } else {
+                          userProfile.addFavoriteRecipe(recipe);
+                        }
+                      },
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RecipeDetailScreen(recipe: recipe),
+                        ),
+                      );
+                    },
                   ),
                 );
               },
             ),
-          );
-        },
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color.fromRGBO(0, 145, 255, 100),
@@ -199,5 +252,63 @@ class _RecipeScreenState extends State<RecipeScreen> {
         );
       },
     );
+  }
+}
+
+// Для улучшения поиска, можно использовать SearchDelegate
+class RecipeSearchDelegate extends SearchDelegate {
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: Icon(Icons.clear),
+        onPressed: () {
+          query = ''; // Очистка поиска
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, null); // Закрытие поиска
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    final userProfile = Provider.of<UserProfile>(context);
+    List<Recipe> allRecipes = userProfile.getFavoriteRecipes();
+    List<Recipe> filteredRecipes = allRecipes.where((recipe) {
+      return recipe.title.toLowerCase().contains(query.toLowerCase());
+    }).toList();
+
+    return ListView.builder(
+      itemCount: filteredRecipes.length,
+      itemBuilder: (context, index) {
+        final recipe = filteredRecipes[index];
+        return ListTile(
+          title: Text(recipe.title),
+          subtitle: Text(recipe.description),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => RecipeDetailScreen(recipe: recipe),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    return Center(child: Text("Введите название рецепта для поиска"));
   }
 }

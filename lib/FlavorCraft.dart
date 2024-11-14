@@ -33,12 +33,11 @@ class _FlavorCraftState extends State<FlavorCraft> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
+      appBar: _selectedIndex != 0
+          ? AppBar(
         automaticallyImplyLeading: false,
         title: Text(
-          _selectedIndex == 0
-              ? 'Рецепты'
-              : _selectedIndex == 2
+          _selectedIndex == 2
               ? 'Избранное'
               : _selectedIndex == 3
               ? 'Профиль'
@@ -52,7 +51,8 @@ class _FlavorCraftState extends State<FlavorCraft> {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
-      ),
+      )
+          : null, // Убираем AppBar на экране "Рецепты"
       body: _selectedIndex == 2
           ? ListView.builder(
         itemCount: favoriteRecipes.length,
