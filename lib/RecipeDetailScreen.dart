@@ -14,7 +14,9 @@ class RecipeDetailScreen extends StatelessWidget {
     final isFavorite = userProfile.isFavorite(recipe);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text(recipe.title, style: TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.bold)),
         actions: [
           IconButton(
@@ -40,7 +42,15 @@ class RecipeDetailScreen extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Image.network(recipe.imageUrl),
+                child: Image.network(
+                  recipe.imageUrl,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Icon(
+                    Icons.broken_image,
+                    color: Colors.grey,
+                    size: 150,
+                  ),
+                ),
               ),
               const SizedBox(height: 16.0),
               Text(
