@@ -6,7 +6,7 @@ import 'user_profile.dart';
 class RecipeDetailScreen extends StatelessWidget {
   final Recipe recipe;
 
-  RecipeDetailScreen({required this.recipe});
+  const RecipeDetailScreen({super.key, required this.recipe});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class RecipeDetailScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text(recipe.title, style: TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.bold)),
+        title: Text(recipe.title, style: const TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.bold)),
         actions: [
           IconButton(
             icon: Icon(
@@ -45,7 +45,7 @@ class RecipeDetailScreen extends StatelessWidget {
                 child: Image.network(
                   recipe.imageUrl,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Icon(
+                  errorBuilder: (context, error, stackTrace) => const Icon(
                     Icons.broken_image,
                     color: Colors.grey,
                     size: 150,
@@ -55,22 +55,22 @@ class RecipeDetailScreen extends StatelessWidget {
               const SizedBox(height: 16.0),
               Text(
                 recipe.description,
-                style: TextStyle(fontSize: 18, fontFamily: 'Montserrat'),
+                style: const TextStyle(fontSize: 18, fontFamily: 'Montserrat'),
               ),
               const SizedBox(height: 16.0),
-              Text(
+              const Text(
                 'Ингредиенты:',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Montserrat'),
               ),
               const SizedBox(height: 8.0),
-              ...recipe.ingredients.map((ingredient) => Text('• $ingredient', style: TextStyle(fontFamily: 'Montserrat'))).toList(),
+              ...recipe.ingredients.map((ingredient) => Text('• $ingredient', style: const TextStyle(fontFamily: 'Montserrat'))),
               const SizedBox(height: 16.0),
-              Text(
+              const Text(
                 'Инструкции:',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Montserrat'),
               ),
               const SizedBox(height: 8.0),
-              Text(recipe.instructions, style: TextStyle(fontFamily: 'Montserrat')),
+              Text(recipe.instructions, style: const TextStyle(fontFamily: 'Montserrat')),
             ],
           ),
         ),

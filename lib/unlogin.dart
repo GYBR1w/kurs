@@ -3,6 +3,8 @@ import 'login.dart';
 import 'registration_screen.dart';
 
 class UnloginScreen extends StatelessWidget {
+  const UnloginScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,13 +16,13 @@ class UnloginScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(
+              const Icon(
                 Icons.star,
                 size: 100,
                 color: Colors.black54,
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 'FlavorCraft',
                 style: TextStyle(
                   fontFamily: 'Montserrat',
@@ -29,8 +31,8 @@ class UnloginScreen extends StatelessWidget {
                   fontWeight: FontWeight.w900,
                 ),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 'Личный кулинарный помощник, легкие и вкусные рецепты на каждый день.',
                 style: TextStyle(
                   fontFamily: 'Montserrat',
@@ -39,7 +41,7 @@ class UnloginScreen extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
@@ -49,19 +51,19 @@ class UnloginScreen extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  minimumSize: Size(double.infinity, 50),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   'Войти',
                   style: TextStyle(fontSize: 18, fontFamily: 'Montserrat', color: Colors.white),
 
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               OutlinedButton(
                 onPressed: () {
                   Navigator.push(
@@ -70,14 +72,14 @@ class UnloginScreen extends StatelessWidget {
                   );
                 },
                 style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: Colors.black),
+                  side: const BorderSide(color: Colors.black),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  minimumSize: Size(double.infinity, 50),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  minimumSize: const Size(double.infinity, 50),
                 ),
-                child: Text(
+                child: const Text(
                   'Создать аккаунт',
                   style: TextStyle(fontSize: 18, fontFamily: 'Montserrat', color: Colors.black),
                 ),
@@ -99,7 +101,7 @@ class UnloginScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
       ),
-      style: TextStyle(fontSize: 18),
+      style: const TextStyle(fontSize: 18),
     );
   }
 }

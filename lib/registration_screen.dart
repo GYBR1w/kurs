@@ -10,9 +10,11 @@ class RegistrationScreen extends StatelessWidget {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
+  RegistrationScreen({super.key});
+
   void _showSuccessSnackBar(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      const SnackBar(
         content: Text(
           'Аккаунт успешно создан!',
           style: TextStyle(fontFamily: 'Montserrat'),
@@ -35,13 +37,13 @@ class RegistrationScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(
+                const Icon(
                   Icons.email,
                   size: 100,
                   color: Colors.black54,
                 ),
-                SizedBox(height: 20),
-                Text(
+                const SizedBox(height: 20),
+                const Text(
                   'Создать аккаунт',
                   style: TextStyle(
                     fontFamily: 'Montserrat',
@@ -50,50 +52,57 @@ class RegistrationScreen extends StatelessWidget {
                     fontWeight: FontWeight.w900,
                   ),
                 ),
-                SizedBox(height: 10),
-                SizedBox(height: 40),
+                const SizedBox(height: 10),
+                const SizedBox(height: 40),
                 _buildTextField('Почта', context, controller: _emailController),
-                SizedBox(height: 16),
-                _buildTextField('Пароль', context, obscureText: true, controller: _passwordController),
-                SizedBox(height: 16),
-                _buildTextField('Подтверждение пароля', context, obscureText: true, controller: _confirmPasswordController),
-                SizedBox(height: 30),
+                const SizedBox(height: 16),
+                _buildTextField('Пароль', context,
+                    obscureText: true, controller: _passwordController),
+                const SizedBox(height: 16),
+                _buildTextField('Подтверждение пароля', context,
+                    obscureText: true, controller: _confirmPasswordController),
+                const SizedBox(height: 30),
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      final userProfile = Provider.of<UserProfile>(context, listen: false);
+                      final userProfile =
+                          Provider.of<UserProfile>(context, listen: false);
                       userProfile.updateName(_nameController.text);
                       userProfile.updateEmail(_emailController.text);
-
 
                       _showSuccessSnackBar(context);
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => FlavorCraft()),
+                        MaterialPageRoute(
+                            builder: (context) => const FlavorCraft()),
                       );
                     }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    minimumSize: Size(double.infinity, 50),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    minimumSize: const Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Создать аккаунт',
-                    style: TextStyle(fontFamily: 'Montserrat', color: Colors.white, fontSize: 18),
+                    style: TextStyle(
+                        fontFamily: 'Montserrat',
+                        color: Colors.white,
+                        fontSize: 18),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text(
+                  child: const Text(
                     'Назад',
-                    style: TextStyle(fontFamily: 'Montserrat', color: Colors.blue),
+                    style:
+                        TextStyle(fontFamily: 'Montserrat', color: Colors.blue),
                   ),
                 ),
               ],
@@ -104,12 +113,14 @@ class RegistrationScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(String hintText, BuildContext context, {bool obscureText = false, TextEditingController? controller}) {
+  Widget _buildTextField(String hintText, BuildContext context,
+      {bool obscureText = false, TextEditingController? controller}) {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: TextStyle(fontFamily: 'Montserrat', color: Colors.black54),
+        hintStyle:
+            const TextStyle(fontFamily: 'Montserrat', color: Colors.black54),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),

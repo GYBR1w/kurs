@@ -7,6 +7,8 @@ import 'user_profile.dart';
 import 'unlogin.dart';
 
 class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
+
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
@@ -23,7 +25,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final userProfile = Provider.of<UserProfile>(context, listen: false);
       if (userProfile.name.isNotEmpty) _nameController.text = userProfile.name;
-      if (userProfile.email.isNotEmpty) _emailController.text = userProfile.email;
+      if (userProfile.email.isNotEmpty)
+        _emailController.text = userProfile.email;
     });
   }
 
@@ -70,8 +73,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
                 setState(() {
-                  _nameController.text = Provider.of<UserProfile>(context, listen: false).name.isNotEmpty ? Provider.of<UserProfile>(context, listen: false).name : 'Имя пользователя';
-                  _emailController.text = Provider.of<UserProfile>(context, listen: false).email.isNotEmpty ? Provider.of<UserProfile>(context, listen: false).email : 'email@example.com';
+                  _nameController
+                      .text = Provider.of<UserProfile>(context, listen: false)
+                          .name
+                          .isNotEmpty
+                      ? Provider.of<UserProfile>(context, listen: false).name
+                      : 'Имя пользователя';
+                  _emailController
+                      .text = Provider.of<UserProfile>(context, listen: false)
+                          .email
+                          .isNotEmpty
+                      ? Provider.of<UserProfile>(context, listen: false).email
+                      : 'email@example.com';
                 });
               },
             ),
@@ -79,7 +92,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: const Text('Сохранить'),
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  final userProfile = Provider.of<UserProfile>(context, listen: false);
+                  final userProfile =
+                      Provider.of<UserProfile>(context, listen: false);
                   userProfile.updateName(_nameController.text);
                   userProfile.updateEmail(_emailController.text);
                   Navigator.of(context).pop();
@@ -101,7 +115,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _logout() {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => UnloginScreen()));
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const UnloginScreen()));
   }
 
   @override
@@ -122,7 +137,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   radius: 50,
                   backgroundColor: Colors.grey[300],
                   backgroundImage: userProfile.avatarImage != null
-                      ? (kIsWeb ? NetworkImage(userProfile.avatarImage!.path) : FileImage(userProfile.avatarImage!))
+                      ? (kIsWeb
+                          ? NetworkImage(userProfile.avatarImage!.path)
+                          : FileImage(userProfile.avatarImage!))
                       : null,
                   child: userProfile.avatarImage == null
                       ? const Icon(Icons.person, size: 50, color: Colors.grey)
@@ -130,39 +147,57 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              Text(userProfile.name.isNotEmpty ? userProfile.name : 'Имя пользователя', style: const TextStyle(fontSize: 24, fontFamily: 'Montserrat')),
+              Text(
+                  userProfile.name.isNotEmpty
+                      ? userProfile.name
+                      : 'Имя пользователя',
+                  style:
+                      const TextStyle(fontSize: 24, fontFamily: 'Montserrat')),
               const SizedBox(height: 5),
-              Text(userProfile.email.isNotEmpty ? userProfile.email : 'email@example.com', style: const TextStyle(fontSize: 16, fontFamily: 'Montserrat', color: Colors.grey)),
+              Text(
+                  userProfile.email.isNotEmpty
+                      ? userProfile.email
+                      : 'email@example.com',
+                  style: const TextStyle(
+                      fontSize: 16,
+                      fontFamily: 'Montserrat',
+                      color: Colors.grey)),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () => _showEditDialog(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  minimumSize: Size(double.infinity, 50),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 child: const Text(
                   'Редактировать профиль',
-                  style: TextStyle(fontSize: 18, fontFamily: 'Montserrat', color: Colors.white),
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: 'Montserrat',
+                      color: Colors.white),
                 ),
               ),
               const SizedBox(height: 20),
               OutlinedButton(
                 onPressed: _logout,
                 style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: Colors.black),
+                  side: const BorderSide(color: Colors.black),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  minimumSize: Size(double.infinity, 50),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  minimumSize: const Size(double.infinity, 50),
                 ),
                 child: const Text(
                   'Выйти',
-                  style: TextStyle(fontSize: 18, fontFamily: 'Montserrat', color: Colors.black),
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: 'Montserrat',
+                      color: Colors.black),
                 ),
               ),
             ],

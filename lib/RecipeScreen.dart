@@ -42,6 +42,8 @@ class Recipe {
 }
 
 class RecipeScreen extends StatefulWidget {
+  const RecipeScreen({super.key});
+
   @override
   _RecipeScreenState createState() => _RecipeScreenState();
 }
@@ -71,16 +73,32 @@ class _RecipeScreenState extends State<RecipeScreen> {
           Recipe(
             title: 'Спагетти Карбонара',
             description: 'Классическое итальянское блюдо...',
-            imageUrl: 'https://eda.ru/images/RecipeOpenGraph/1200x630/pasta-karbonara-pasta-alla-carbonara_50865_ogimage.jpg',
-            ingredients: ['Спагетти (400 г)', 'Панчетта (150 г)', 'Яйцо (2 шт.)', 'Пармезан (50 г)', 'Чёрный перец (по вкусу)', 'Соль (по вкусу)'],
+            imageUrl:
+                'https://eda.ru/images/RecipeOpenGraph/1200x630/pasta-karbonara-pasta-alla-carbonara_50865_ogimage.jpg',
+            ingredients: [
+              'Спагетти (400 г)',
+              'Панчетта (150 г)',
+              'Яйцо (2 шт.)',
+              'Пармезан (50 г)',
+              'Чёрный перец (по вкусу)',
+              'Соль (по вкусу)'
+            ],
             instructions: '1. Отварите спагетти 2. Добавьте соус 3. Смешайте.',
           ),
           Recipe(
             title: 'Борщ',
             description: 'Традиционный суп',
-            imageUrl: 'https://eda.ru/images/RecipePhoto/930x622/borsch-s-hrenom_29213_photo_56956.webp',
-            ingredients: ['Свекла (1 шт.)', 'Картофель (3 шт.)', 'Морковь (1 шт.)', 'Лук (1 шт.)', 'Капуста (200 г)'],
-            instructions: '1. Нарезать все ингредиенты 2. Закинуть в кастрюлю. 3. Готово!',
+            imageUrl:
+                'https://eda.ru/images/RecipePhoto/930x622/borsch-s-hrenom_29213_photo_56956.webp',
+            ingredients: [
+              'Свекла (1 шт.)',
+              'Картофель (3 шт.)',
+              'Морковь (1 шт.)',
+              'Лук (1 шт.)',
+              'Капуста (200 г)'
+            ],
+            instructions:
+                '1. Нарезать все ингредиенты 2. Закинуть в кастрюлю. 3. Готово!',
           ),
         ];
         _saveRecipes();
@@ -90,7 +108,8 @@ class _RecipeScreenState extends State<RecipeScreen> {
 
   Future<void> _saveRecipes() async {
     final prefs = await SharedPreferences.getInstance();
-    final List<Map<String, dynamic>> jsonRecipes = recipes.map((recipe) => recipe.toJson()).toList();
+    final List<Map<String, dynamic>> jsonRecipes =
+        recipes.map((recipe) => recipe.toJson()).toList();
     prefs.setString('recipes', json.encode(jsonRecipes));
   }
 
@@ -112,7 +131,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(
+        title: const Text(
           'Рецепты',
           style: TextStyle(
             fontFamily: 'Montserrat',
@@ -123,7 +142,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
-        actions: [],
+        actions: const [],
       ),
       body: Column(
         children: [
@@ -137,8 +156,8 @@ class _RecipeScreenState extends State<RecipeScreen> {
               },
               decoration: InputDecoration(
                 hintText: 'Поиск рецептов...',
-                hintStyle: TextStyle(fontFamily: 'Montserrat'),
-                prefixIcon: Icon(Icons.search),
+                hintStyle: const TextStyle(fontFamily: 'Montserrat'),
+                prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -160,14 +179,16 @@ class _RecipeScreenState extends State<RecipeScreen> {
                       width: 50,
                       height: 50,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Icon(
+                      errorBuilder: (context, error, stackTrace) => const Icon(
                         Icons.broken_image,
                         color: Colors.grey,
                         size: 50,
                       ),
                     ),
-                    title: Text(recipe.title, style: TextStyle(fontFamily: 'Montserrat')),
-                    subtitle: Text(recipe.description, style: TextStyle(fontFamily: 'Montserrat')),
+                    title: Text(recipe.title,
+                        style: const TextStyle(fontFamily: 'Montserrat')),
+                    subtitle: Text(recipe.description,
+                        style: const TextStyle(fontFamily: 'Montserrat')),
                     trailing: IconButton(
                       icon: Icon(
                         isFavorite ? Icons.favorite : Icons.favorite_border,
@@ -185,7 +206,8 @@ class _RecipeScreenState extends State<RecipeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => RecipeDetailScreen(recipe: recipe),
+                          builder: (context) =>
+                              RecipeDetailScreen(recipe: recipe),
                         ),
                       );
                     },
@@ -197,10 +219,10 @@ class _RecipeScreenState extends State<RecipeScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Color.fromRGBO(0, 145, 255, 100),
+        backgroundColor: const Color.fromRGBO(0, 145, 255, 100),
         onPressed: _showAddRecipeDialog,
-        child: Icon(Icons.add),
         tooltip: 'Добавить рецепт',
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -210,47 +232,53 @@ class _RecipeScreenState extends State<RecipeScreen> {
     final TextEditingController descriptionController = TextEditingController();
     final TextEditingController imageUrlController = TextEditingController();
     final TextEditingController ingredientsController = TextEditingController();
-    final TextEditingController instructionsController = TextEditingController();
+    final TextEditingController instructionsController =
+        TextEditingController();
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Добавить новый рецепт', style: TextStyle(fontFamily: 'Montserrat',),),
+          title: const Text(
+            'Добавить новый рецепт',
+            style: TextStyle(
+              fontFamily: 'Montserrat',
+            ),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: titleController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Название',
                   labelStyle: TextStyle(fontFamily: 'Montserrat'),
                 ),
               ),
               TextField(
                 controller: descriptionController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Описание',
                   labelStyle: TextStyle(fontFamily: 'Montserrat'),
                 ),
               ),
               TextField(
                 controller: imageUrlController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'URL изображения',
                   labelStyle: TextStyle(fontFamily: 'Montserrat'),
                 ),
               ),
               TextField(
                 controller: ingredientsController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Ингредиенты (через запятую)',
                   labelStyle: TextStyle(fontFamily: 'Montserrat'),
                 ),
               ),
               TextField(
                 controller: instructionsController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Инструкции',
                   labelStyle: TextStyle(fontFamily: 'Montserrat'),
                 ),
@@ -260,7 +288,10 @@ class _RecipeScreenState extends State<RecipeScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                final ingredients = ingredientsController.text.split(',').map((s) => s.trim()).toList();
+                final ingredients = ingredientsController.text
+                    .split(',')
+                    .map((s) => s.trim())
+                    .toList();
                 setState(() {
                   recipes.add(Recipe(
                     title: titleController.text,
@@ -273,7 +304,8 @@ class _RecipeScreenState extends State<RecipeScreen> {
                 });
                 Navigator.of(context).pop();
               },
-              child: Text('Добавить', style: TextStyle(fontFamily: 'Montserrat')),
+              child: const Text('Добавить',
+                  style: TextStyle(fontFamily: 'Montserrat')),
             ),
           ],
         );
@@ -287,7 +319,7 @@ class RecipeSearchDelegate extends SearchDelegate {
   List<Widget>? buildActions(BuildContext context) {
     return [
       IconButton(
-        icon: Icon(Icons.clear),
+        icon: const Icon(Icons.clear),
         onPressed: () {
           query = '';
         },
@@ -298,7 +330,7 @@ class RecipeSearchDelegate extends SearchDelegate {
   @override
   Widget? buildLeading(BuildContext context) {
     return IconButton(
-      icon: Icon(Icons.arrow_back),
+      icon: const Icon(Icons.arrow_back),
       onPressed: () {
         close(context, null);
       },
@@ -318,8 +350,10 @@ class RecipeSearchDelegate extends SearchDelegate {
       itemBuilder: (context, index) {
         final recipe = filteredRecipes[index];
         return ListTile(
-          title: Text(recipe.title, style: TextStyle(fontFamily: 'Montserrat')),
-          subtitle: Text(recipe.description, style: TextStyle(fontFamily: 'Montserrat')),
+          title: Text(recipe.title,
+              style: const TextStyle(fontFamily: 'Montserrat')),
+          subtitle: Text(recipe.description,
+              style: const TextStyle(fontFamily: 'Montserrat')),
           onTap: () {
             Navigator.push(
               context,
@@ -335,6 +369,12 @@ class RecipeSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return Center(child: Text("Введите название рецепта для поиска", style: TextStyle(fontFamily: 'Montserrat',),));
+    return const Center(
+        child: Text(
+      "Введите название рецепта для поиска",
+      style: TextStyle(
+        fontFamily: 'Montserrat',
+      ),
+    ));
   }
 }
