@@ -1,11 +1,79 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:animations/animations.dart';
 import 'RecipeScreen.dart';
-import 'Profile.dart';
+import 'ProfileScreen.dart';
 import 'user_profile.dart';
 import 'RecipeDetailScreen.dart';
+import 'FavoritesScreen.dart';
+import 'RecipeSearchDelegate.dart';
+import 'recipe_provider.dart';
+import 'unlogin.dart';
+
+void main() {
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => UserProfile(),
+      child: const MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final userProfile = Provider.of<UserProfile>(context, listen: false);
+    userProfile.updateName('Имя пользователя');
+    userProfile.updateEmail('email@example.com');
+    return MaterialApp(
+      title: 'FlavorCraft',
+      theme: ThemeData(
+        primarySwatch: Colors.orange,
+        brightness: Brightness.light,
+        textTheme: const TextTheme(
+          headlineSmall: TextStyle(
+            fontFamily: 'Montserrat',
+            fontWeight: FontWeight.bold,
+          ),
+          bodyLarge: TextStyle(fontFamily: 'Montserrat'),
+        ),
+        colorScheme: ColorScheme.light(
+          primary: Colors.orange,
+          secondary: Colors.orangeAccent,
+          surface: Colors.white,
+        ),
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.orange,
+        textTheme: const TextTheme(
+          headlineSmall: TextStyle(
+            fontFamily: 'Montserrat',
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          bodyLarge: TextStyle(
+            fontFamily: 'Montserrat',
+            color: Colors.white,
+          ),
+        ),
+        colorScheme: ColorScheme.dark(
+          primary: Colors.orange,
+          secondary: Colors.orangeAccent,
+          surface: Colors.grey[900]!,
+        ),
+      ),
+      themeMode: ThemeMode.system,
+      home: const FlavorCraft(),
+    );
+  }
+}
 
 class FlavorCraft extends StatefulWidget {
+  const FlavorCraft({super.key});
+
   @override
   _FlavorCraftState createState() => _FlavorCraftState();
 }
@@ -13,105 +81,43 @@ class FlavorCraft extends StatefulWidget {
 class _FlavorCraftState extends State<FlavorCraft> {
   int _selectedIndex = 0;
 
-  static List<Widget> _widgetOptions = <Widget>[
-    RecipeScreen(),
-    Center(child: Text('Избранное', style: TextStyle(fontFamily: 'Montserrat', fontSize: 24))),
-    ProfileScreen(),
+  final List<Widget> _screens = [
+    const RecipeScreen(),
+    const FavoritesScreen(),
+    const ProfileScreen(),
   ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    final userProfile = Provider.of<UserProfile>(context);
-    List<Recipe> favoriteRecipes = userProfile.getFavoriteRecipes();
-
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: _selectedIndex != 0
-          ? AppBar(
-        automaticallyImplyLeading: false,
-        title: Text(
-          _selectedIndex == 1
-              ? 'Избранное'
-              : _selectedIndex == 2
-              ? 'Профиль'
-              : '',
-          style: TextStyle(
-            fontFamily: 'Montserrat',
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        centerTitle: true,
-      )
-          : null,
-      body: _selectedIndex == 1
-          ? ListView.builder(
-        itemCount: favoriteRecipes.length,
-        itemBuilder: (context, index) {
-          final recipe = favoriteRecipes[index];
-          return Card(
-            margin: const EdgeInsets.all(8.0),
-            child: ListTile(
-              leading: Image.network(
-                recipe.imageUrl,
-                width: 50,
-                height: 50,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Icon(
-                  Icons.broken_image,
-                  color: Colors.grey,
-                  size: 50,
-                ),
-              ),
-              title: Text(recipe.title, style: TextStyle(fontFamily: 'Montserrat')),
-              subtitle: Text(recipe.description, style: TextStyle(fontFamily: 'Montserrat')),
-              trailing: IconButton(
-                icon: Icon(Icons.delete, color: Colors.red),
-                onPressed: () {
-                  userProfile.removeFavoriteRecipe(recipe);
-                },
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => RecipeDetailScreen(recipe: recipe),
-                  ),
-                );
-              },
-            ),
+      body: PageTransitionSwitcher(
+        transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
+          return FadeThroughTransition(
+            animation: primaryAnimation,
+            secondaryAnimation: secondaryAnimation,
+            child: child,
           );
         },
-      )
-          : _widgetOptions.elementAt(_selectedIndex),
-
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.black,
-        selectedLabelStyle: TextStyle(fontFamily: 'Montserrat', color: Colors.blue),
-        unselectedLabelStyle: TextStyle(fontFamily: 'Montserrat', color: Colors.blue),
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            backgroundColor: Colors.white,
-            icon: Icon(Icons.home),
+        child: _screens[_selectedIndex],
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.restaurant_menu),
             label: 'Рецепты',
           ),
-          BottomNavigationBarItem(
+          NavigationDestination(
             icon: Icon(Icons.favorite),
             label: 'Избранное',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
+          NavigationDestination(
+            icon: Icon(Icons.person),
             label: 'Профиль',
           ),
         ],

@@ -5,6 +5,8 @@ import 'unlogin.dart';
 class LoginScreen extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
 
+  LoginScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,13 +20,13 @@ class LoginScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(
+                const Icon(
                   Icons.login,
                   size: 100,
-                  color: Colors.black54,
+                  color: Colors.blue,
                 ),
-                SizedBox(height: 20),
-                Text(
+                const SizedBox(height: 20),
+                const Text(
                   'Войти',
                   style: TextStyle(
                     fontFamily: 'Montserrat',
@@ -33,42 +35,47 @@ class LoginScreen extends StatelessWidget {
                     fontWeight: FontWeight.w900,
                   ),
                 ),
-                SizedBox(height: 10),
-                SizedBox(height: 40),
+                const SizedBox(height: 10),
+                const SizedBox(height: 40),
                 _buildTextField('Почта'),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 _buildTextField('Пароль', obscureText: true),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => FlavorCraft()),
+                        MaterialPageRoute(
+                            builder: (context) => const FlavorCraft()),
                       );
                     }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    minimumSize: Size(double.infinity, 50),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    minimumSize: const Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Войти',
-                    style: TextStyle(fontFamily: 'Montserrat', color: Colors.white, fontSize: 18),
+                    style: TextStyle(
+                        fontFamily: 'Montserrat',
+                        color: Colors.white,
+                        fontSize: 18),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text(
+                  child: const Text(
                     'Назад',
-                    style: TextStyle(fontFamily: 'Montserrat', color: Colors.blue),
+                    style:
+                        TextStyle(fontFamily: 'Montserrat', color: Colors.blue),
                   ),
                 ),
               ],
@@ -83,7 +90,8 @@ class LoginScreen extends StatelessWidget {
     return TextFormField(
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: TextStyle(fontFamily: 'Montserrat', color: Colors.black54),
+        hintStyle:
+            const TextStyle(fontFamily: 'Montserrat', color: Colors.black54),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),

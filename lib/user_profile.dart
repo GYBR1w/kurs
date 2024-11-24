@@ -1,79 +1,100 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'RecipeScreen.dart';
+import 'dart:convert';
+import 'models/recipe.dart';
 
 class UserProfile extends ChangeNotifier {
-  String name;
-  String email;
-  File? avatarImage;
-  List<Recipe> favoriteRecipes;
+  String _email = '';
+  String _name = '';
+  String _avatar = '';
+  final Set<Recipe> _favoriteRecipes = {};
 
-  UserProfile({
-    required this.name,
-    required this.email,
-    this.avatarImage,
-    List<Recipe>? favoriteRecipes,
-  }) : favoriteRecipes = favoriteRecipes ?? [] {
-    _loadFavoriteRecipes();
-  }
+  String get email => _email;
+  String get name => _name;
+  String get avatar => _avatar;
+  List<Recipe> get favoriteRecipes => List.unmodifiable(_favoriteRecipes.toList());
 
-  Future<void> _loadFavoriteRecipes() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String? favoriteRecipesString = prefs.getString('favoriteRecipes');
-
-    if (favoriteRecipesString != null) {
-      final List<dynamic> decoded = json.decode(favoriteRecipesString);
-      favoriteRecipes = decoded.map((jsonItem) => Recipe.fromJson(jsonItem)).toList();
-      notifyListeners();
-    }
-  }
-
-
-  Future<void> _saveFavoriteRecipes() async {
-    final prefs = await SharedPreferences.getInstance();
-    final List<Map<String, dynamic>> jsonRecipes = favoriteRecipes.map((recipe) => recipe.toJson()).toList();
-    prefs.setString('favoriteRecipes', json.encode(jsonRecipes));
+  void updateEmail(String newEmail) {
+    _email = newEmail;
     notifyListeners();
+    _saveToPrefs();
   }
 
   void updateName(String newName) {
-    name = newName;
+    _name = newName;
     notifyListeners();
+    _saveToPrefs();
   }
 
-  void updateEmail(String newEmail) {
-    email = newEmail;
+  void updateAvatar(String newAvatar) {
+    _avatar = newAvatar;
     notifyListeners();
+    _saveToPrefs();
   }
-
-  void updateAvatar(File? newAvatar) {
-    avatarImage = newAvatar;
-    notifyListeners();
-  }
-
 
   void addFavoriteRecipe(Recipe recipe) {
-    if (!favoriteRecipes.any((item) => item.title == recipe.title)) {
-      favoriteRecipes.add(recipe);
-      _saveFavoriteRecipes();
+    if (_favoriteRecipes.add(recipe)) {
       notifyListeners();
+      _saveToPrefs();
     }
   }
 
-
   void removeFavoriteRecipe(Recipe recipe) {
-    favoriteRecipes.removeWhere((item) => item.title == recipe.title);
-    _saveFavoriteRecipes();
-    notifyListeners();
+    if (_favoriteRecipes.remove(recipe)) {
+      notifyListeners();
+      _saveToPrefs();
+    }
   }
 
   bool isFavorite(Recipe recipe) {
-    return favoriteRecipes.any((item) => item.title == recipe.title);
+    return _favoriteRecipes.any((r) => r.id == recipe.id);
   }
 
-  List<Recipe> getFavoriteRecipes() {
-    return favoriteRecipes;
+  Future<void> _saveToPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('email', _email);
+    await prefs.setString('name', _name);
+    await prefs.setString('avatar', _avatar);
+    await prefs.setString(
+      'favoriteRecipes',
+      jsonEncode(_favoriteRecipes.map((r) => r.toJson()).toList()),
+    );
+  }
+
+  Future<void> loadFromPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    _email = prefs.getString('email') ?? '';
+    _name = prefs.getString('name') ?? '';
+    _avatar = prefs.getString('avatar') ?? '';
+
+    final favoritesJson = prefs.getString('favoriteRecipes');
+    if (favoritesJson != null) {
+      final List<dynamic> decoded = jsonDecode(favoritesJson);
+      _favoriteRecipes.clear();
+      _favoriteRecipes.addAll(
+        decoded.map((json) => Recipe.fromJson(json)),
+      );
+    }
+
+    notifyListeners();
+  }
+
+  void clear() {
+    _email = '';
+    _name = '';
+    _avatar = '';
+    _favoriteRecipes.clear();
+    notifyListeners();
+    _saveToPrefs();
+  }
+
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    _email = '';
+    _name = '';
+    _avatar = '';
+    _favoriteRecipes.clear();
+    notifyListeners();
   }
 }

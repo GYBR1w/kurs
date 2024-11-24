@@ -4,44 +4,11 @@ import 'RecipeDetailScreen.dart';
 import 'user_profile.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-
-class Recipe {
-  final String title;
-  final String description;
-  final String imageUrl;
-  final List<String> ingredients;
-  final String instructions;
-
-  Recipe({
-    required this.title,
-    required this.description,
-    required this.imageUrl,
-    required this.ingredients,
-    required this.instructions,
-  });
-
-  Map<String, dynamic> toJson() {
-    return {
-      'title': title,
-      'description': description,
-      'imageUrl': imageUrl,
-      'ingredients': ingredients,
-      'instructions': instructions,
-    };
-  }
-
-  factory Recipe.fromJson(Map<String, dynamic> json) {
-    return Recipe(
-      title: json['title'],
-      description: json['description'],
-      imageUrl: json['imageUrl'],
-      ingredients: List<String>.from(json['ingredients']),
-      instructions: json['instructions'],
-    );
-  }
-}
+import 'models/recipe.dart';
 
 class RecipeScreen extends StatefulWidget {
+  const RecipeScreen({Key? key}) : super(key: key);
+
   @override
   _RecipeScreenState createState() => _RecipeScreenState();
 }
@@ -49,6 +16,16 @@ class RecipeScreen extends StatefulWidget {
 class _RecipeScreenState extends State<RecipeScreen> {
   List<Recipe> recipes = [];
   String _searchQuery = '';
+  String _selectedCategory = 'Все';
+  final List<String> categories = [
+    'Все',
+    'Первые блюда',
+    'Вторые блюда',
+    'Салаты',
+    'Закуски',
+    'Десерты',
+    'Напитки'
+  ];
 
   @override
   void initState() {
@@ -70,17 +47,43 @@ class _RecipeScreenState extends State<RecipeScreen> {
         recipes = [
           Recipe(
             title: 'Спагетти Карбонара',
-            description: 'Классическое итальянское блюдо...',
-            imageUrl: 'https://eda.ru/images/RecipeOpenGraph/1200x630/pasta-karbonara-pasta-alla-carbonara_50865_ogimage.jpg',
-            ingredients: ['Спагетти (400 г)', 'Панчетта (150 г)', 'Яйцо (2 шт.)', 'Пармезан (50 г)', 'Чёрный перец (по вкусу)', 'Соль (по вкусу)'],
-            instructions: '1. Отварите спагетти 2. Добавьте соус 3. Смешайте.',
+            description:
+                'Классическое итальянское блюдо с беконом и сливочным соусом',
+            imageUrl:
+                'https://eda.ru/images/RecipeOpenGraph/1200x630/pasta-karbonara-pasta-alla-carbonara_50865_ogimage.jpg',
+            ingredients: [
+              'Спагетти (400 г)',
+              'Панчетта (150 г)',
+              'Яйцо (2 шт.)',
+              'Пармезан (50 г)',
+              'Чёрный перец (по вкусу)',
+              'Соль (по вкусу)'
+            ],
+            instructions:
+                '1. Отварите спагетти в подсоленной воде аль денте\n2. Обжарьте панчетту до хрустящей корочки\n3. Смешайте яйца с тёртым пармезаном\n4. Соедините все ингредиенты',
+            category: 'Вторые блюда',
+            cookingTime: 30,
+            difficulty: 'Средний',
+            rating: 4.8,
           ),
           Recipe(
             title: 'Борщ',
-            description: 'Традиционный суп',
-            imageUrl: 'https://eda.ru/images/RecipePhoto/930x622/borsch-s-hrenom_29213_photo_56956.webp',
-            ingredients: ['Свекла (1 шт.)', 'Картофель (3 шт.)', 'Морковь (1 шт.)', 'Лук (1 шт.)', 'Капуста (200 г)'],
-            instructions: '1. Нарезать все ингредиенты 2. Закинуть в кастрюлю. 3. Готово!',
+            description: 'Традиционный украинский борщ со сметаной',
+            imageUrl:
+                'https://eda.ru/images/RecipePhoto/930x622/borsch-s-hrenom_29213_photo_56956.webp',
+            ingredients: [
+              'Свекла (1 шт.)',
+              'Картофель (3 шт.)',
+              'Морковь (1 шт.)',
+              'Лук (1 шт.)',
+              'Капуста (200 г)'
+            ],
+            instructions:
+                '1. Сварите бульон\n2. Подготовьте овощи\n3. Добавьте их в правильном порядке\n4. Варите до готовности',
+            category: 'Первые блюда',
+            cookingTime: 120,
+            difficulty: 'Сложный',
+            rating: 4.9,
           ),
         ];
         _saveRecipes();
@@ -90,251 +93,640 @@ class _RecipeScreenState extends State<RecipeScreen> {
 
   Future<void> _saveRecipes() async {
     final prefs = await SharedPreferences.getInstance();
-    final List<Map<String, dynamic>> jsonRecipes = recipes.map((recipe) => recipe.toJson()).toList();
+    final List<Map<String, dynamic>> jsonRecipes =
+        recipes.map((recipe) => recipe.toJson()).toList();
     prefs.setString('recipes', json.encode(jsonRecipes));
   }
 
   List<Recipe> _filteredRecipes() {
-    if (_searchQuery.isEmpty) {
-      return recipes;
-    }
     return recipes.where((recipe) {
-      return recipe.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+      final matchesSearch = recipe.title
+              .toLowerCase()
+              .contains(_searchQuery.toLowerCase()) ||
           recipe.description.toLowerCase().contains(_searchQuery.toLowerCase());
+      final matchesCategory =
+          _selectedCategory == 'Все' || recipe.category == _selectedCategory;
+      return matchesSearch && matchesCategory;
     }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    final userProfile = Provider.of<UserProfile>(context);
+    final filteredRecipes = _filteredRecipes();
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text(
-          'Рецепты',
-          style: TextStyle(
-            fontFamily: 'Montserrat',
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        centerTitle: true,
-        actions: [],
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              onChanged: (query) {
-                setState(() {
-                  _searchQuery = query;
-                });
-              },
-              decoration: InputDecoration(
-                hintText: 'Поиск рецептов...',
-                hintStyle: TextStyle(fontFamily: 'Montserrat'),
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Рецепты',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: () => _showAddRecipeDialog(context),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: TextField(
+                onChanged: (value) {
+                  setState(() {
+                    _searchQuery = value;
+                  });
+                },
+                decoration: InputDecoration(
+                  hintText: 'Поиск рецептов',
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey[100],
                 ),
               ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _filteredRecipes().length,
-              itemBuilder: (context, index) {
-                final recipe = _filteredRecipes()[index];
-                final isFavorite = userProfile.isFavorite(recipe);
-
-                return Card(
-                  margin: const EdgeInsets.all(8.0),
-                  child: ListTile(
-                    leading: Image.network(
-                      recipe.imageUrl,
-                      width: 50,
-                      height: 50,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Icon(
-                        Icons.broken_image,
-                        color: Colors.grey,
-                        size: 50,
-                      ),
-                    ),
-                    title: Text(recipe.title, style: TextStyle(fontFamily: 'Montserrat')),
-                    subtitle: Text(recipe.description, style: TextStyle(fontFamily: 'Montserrat')),
-                    trailing: IconButton(
-                      icon: Icon(
-                        isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: isFavorite ? Colors.red : Colors.grey,
-                      ),
-                      onPressed: () {
-                        if (isFavorite) {
-                          userProfile.removeFavoriteRecipe(recipe);
-                        } else {
-                          userProfile.addFavoriteRecipe(recipe);
-                        }
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Row(
+                children: categories.map((category) {
+                  final isSelected = _selectedCategory == category;
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: FilterChip(
+                      label: Text(category),
+                      selected: isSelected,
+                      onSelected: (bool selected) {
+                        setState(() {
+                          _selectedCategory = selected ? category : 'Все';
+                        });
                       },
+                      backgroundColor: Colors.grey[100],
+                      selectedColor:
+                          Theme.of(context).primaryColor.withOpacity(0.2),
+                      checkmarkColor: Theme.of(context).primaryColor,
+                      labelStyle: TextStyle(
+                        color: isSelected
+                            ? Theme.of(context).primaryColor
+                            : Colors.black87,
+                      ),
                     ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => RecipeDetailScreen(recipe: recipe),
-                        ),
+                  );
+                }).toList(),
+              ),
+            ),
+            Expanded(
+              child: Consumer<UserProfile>(
+                builder: (context, userProfile, child) {
+                  return ListView.builder(
+                    padding: const EdgeInsets.all(16.0),
+                    itemCount: filteredRecipes.length,
+                    itemBuilder: (context, index) {
+                      final recipe = filteredRecipes[index];
+                      return RecipeCard(
+                        recipe: recipe,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  RecipeDetailScreen(recipe: recipe),
+                            ),
+                          );
+                        },
                       );
                     },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    int maxLines = 1,
+    TextInputType? keyboardType,
+  }) {
+    final effectiveKeyboardType = maxLines > 1 
+        ? TextInputType.multiline 
+        : (keyboardType ?? TextInputType.text);
+        
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 16, top: 8),
+            child: Row(
+              children: [
+                Icon(icon, size: 18, color: Colors.grey[600]),
+                const SizedBox(width: 8),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w500,
                   ),
-                );
-              },
+                ),
+              ],
+            ),
+          ),
+          TextField(
+            controller: controller,
+            minLines: maxLines,
+            maxLines: null,
+            keyboardType: effectiveKeyboardType,
+            textInputAction: maxLines > 1 ? TextInputAction.newline : TextInputAction.next,
+            style: const TextStyle(fontSize: 16),
+            decoration: const InputDecoration(
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.fromLTRB(16, 8, 16, 16),
             ),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Color.fromRGBO(0, 145, 255, 100),
-        onPressed: _showAddRecipeDialog,
-        child: Icon(Icons.add),
-        tooltip: 'Добавить рецепт',
+    );
+  }
+
+  Widget _buildDropdownField({
+    required String label,
+    required IconData icon,
+    required String value,
+    required List<String> items,
+    required Function(String?) onChanged,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 16, top: 8),
+            child: Row(
+              children: [
+                Icon(icon, size: 18, color: Colors.grey[600]),
+                const SizedBox(width: 8),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
+            child: DropdownButtonFormField<String>(
+              value: value,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(horizontal: 8),
+              ),
+              items: items.map((item) {
+                return DropdownMenuItem(
+                  value: item,
+                  child: Text(item),
+                );
+              }).toList(),
+              onChanged: onChanged,
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Future<void> _showAddRecipeDialog() async {
-    final TextEditingController titleController = TextEditingController();
-    final TextEditingController descriptionController = TextEditingController();
-    final TextEditingController imageUrlController = TextEditingController();
-    final TextEditingController ingredientsController = TextEditingController();
-    final TextEditingController instructionsController = TextEditingController();
+  Widget _buildTimeField({
+    required String label,
+    required IconData icon,
+    required int value,
+    required Function(String) onChanged,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 16, top: 8),
+            child: Row(
+              children: [
+                Icon(icon, size: 18, color: Colors.grey[600]),
+                const SizedBox(width: 8),
+                Text(
+                  '$label (мин)',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    initialValue: value.toString(),
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                    ),
+                    onChanged: onChanged,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-    showDialog(
+  void _showAddRecipeDialog(BuildContext context) {
+    final _titleController = TextEditingController();
+    final _descriptionController = TextEditingController();
+    final _imageUrlController = TextEditingController();
+    final _ingredientsController = TextEditingController();
+    final _instructionsController = TextEditingController();
+    String _selectedCategory = categories[1];
+    String _selectedDifficulty = 'Средний';
+    int _preparationTime = 30;
+    double _rating = 4.0;
+
+    showModalBottomSheet(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Добавить новый рецепт', style: TextStyle(fontFamily: 'Montserrat',),),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => Container(
+          height: MediaQuery.of(context).size.height * 0.9,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: Column(
             children: [
-              TextField(
-                controller: titleController,
-                decoration: InputDecoration(
-                  labelText: 'Название',
-                  labelStyle: TextStyle(fontFamily: 'Montserrat'),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Новый рецепт',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
                 ),
               ),
-              TextField(
-                controller: descriptionController,
-                decoration: InputDecoration(
-                  labelText: 'Описание',
-                  labelStyle: TextStyle(fontFamily: 'Montserrat'),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.fromLTRB(
+                    16,
+                    16,
+                    16,
+                    MediaQuery.of(context).viewInsets.bottom + 16,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildTextField(
+                        controller: _titleController,
+                        label: 'Название блюда',
+                        icon: Icons.restaurant_menu,
+                      ),
+                      _buildTextField(
+                        controller: _descriptionController,
+                        label: 'Описание',
+                        icon: Icons.description,
+                        maxLines: 3,
+                      ),
+                      _buildTextField(
+                        controller: _imageUrlController,
+                        label: 'URL изображения',
+                        icon: Icons.image,
+                        keyboardType: TextInputType.url,
+                      ),
+                      _buildTextField(
+                        controller: _ingredientsController,
+                        label: 'Ингредиенты (через запятую)',
+                        icon: Icons.format_list_bulleted,
+                        maxLines: 3,
+                      ),
+                      _buildTextField(
+                        controller: _instructionsController,
+                        label: 'Инструкция приготовления',
+                        icon: Icons.receipt_long,
+                        maxLines: 5,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: _buildDropdownField(
+                              label: 'Категория',
+                              icon: Icons.category,
+                              value: _selectedCategory,
+                              items: categories.where((category) => category != 'Все').toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedCategory = value!;
+                                });
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            flex: 1,
+                            child: _buildTimeField(
+                              label: 'Время',
+                              icon: Icons.timer,
+                              value: _preparationTime,
+                              onChanged: (value) {
+                                setState(() {
+                                  _preparationTime = int.tryParse(value) ?? 30;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      _buildDropdownField(
+                        label: 'Сложность',
+                        icon: Icons.trending_up,
+                        value: _selectedDifficulty,
+                        items: ['Легкий', 'Средний', 'Сложный'],
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedDifficulty = value!;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Рейтинг: ${_rating.toStringAsFixed(1)}',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Row(
+                            children: List.generate(5, (index) {
+                              return IconButton(
+                                icon: Icon(
+                                  index < _rating.floor()
+                                      ? Icons.star
+                                      : Icons.star_border,
+                                  color: Colors.amber,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _rating = index + 1.0;
+                                  });
+                                },
+                              );
+                            }),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              TextField(
-                controller: imageUrlController,
-                decoration: InputDecoration(
-                  labelText: 'URL изображения',
-                  labelStyle: TextStyle(fontFamily: 'Montserrat'),
-                ),
-              ),
-              TextField(
-                controller: ingredientsController,
-                decoration: InputDecoration(
-                  labelText: 'Ингредиенты (через запятую)',
-                  labelStyle: TextStyle(fontFamily: 'Montserrat'),
-                ),
-              ),
-              TextField(
-                controller: instructionsController,
-                decoration: InputDecoration(
-                  labelText: 'Инструкции',
-                  labelStyle: TextStyle(fontFamily: 'Montserrat'),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(50),
+                    backgroundColor: Theme.of(context).primaryColor,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () {
+                    if (_titleController.text.isEmpty ||
+                        _descriptionController.text.isEmpty ||
+                        _ingredientsController.text.isEmpty ||
+                        _instructionsController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                              'Пожалуйста, заполните все обязательные поля'),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                      return;
+                    }
+
+                    final newRecipe = Recipe(
+                      title: _titleController.text,
+                      description: _descriptionController.text,
+                      imageUrl: _imageUrlController.text.isEmpty
+                          ? 'https://via.placeholder.com/400x300?text=Нет+изображения'
+                          : _imageUrlController.text,
+                      ingredients: _ingredientsController.text
+                          .split(',')
+                          .map((e) => e.trim())
+                          .where((e) => e.isNotEmpty)
+                          .toList(),
+                      instructions: _instructionsController.text,
+                      category: _selectedCategory,
+                      cookingTime: _preparationTime,
+                      difficulty: _selectedDifficulty,
+                      rating: _rating,
+                    );
+
+                    setState(() {
+                      recipes.add(newRecipe);
+                      _saveRecipes();
+                    });
+
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Рецепт "${newRecipe.title}" добавлен'),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  },
+                  child: const Text('Добавить рецепт'),
                 ),
               ),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                final ingredients = ingredientsController.text.split(',').map((s) => s.trim()).toList();
-                setState(() {
-                  recipes.add(Recipe(
-                    title: titleController.text,
-                    description: descriptionController.text,
-                    imageUrl: imageUrlController.text,
-                    ingredients: ingredients,
-                    instructions: instructionsController.text,
-                  ));
-                  _saveRecipes();
-                });
-                Navigator.of(context).pop();
-              },
-              child: Text('Добавить', style: TextStyle(fontFamily: 'Montserrat')),
-            ),
-          ],
-        );
-      },
+        ),
+      ),
     );
   }
 }
 
-class RecipeSearchDelegate extends SearchDelegate {
-  @override
-  List<Widget>? buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: Icon(Icons.clear),
-        onPressed: () {
-          query = '';
-        },
-      ),
-    ];
-  }
+class RecipeCard extends StatelessWidget {
+  final Recipe recipe;
+  final VoidCallback onTap;
+
+  const RecipeCard({
+    Key? key,
+    required this.recipe,
+    required this.onTap,
+  }) : super(key: key);
 
   @override
-  Widget? buildLeading(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.arrow_back),
-      onPressed: () {
-        close(context, null);
-      },
-    );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    final userProfile = Provider.of<UserProfile>(context);
-    List<Recipe> allRecipes = userProfile.getFavoriteRecipes();
-    List<Recipe> filteredRecipes = allRecipes.where((recipe) {
-      return recipe.title.toLowerCase().contains(query.toLowerCase());
-    }).toList();
-
-    return ListView.builder(
-      itemCount: filteredRecipes.length,
-      itemBuilder: (context, index) {
-        final recipe = filteredRecipes[index];
-        return ListTile(
-          title: Text(recipe.title, style: TextStyle(fontFamily: 'Montserrat')),
-          subtitle: Text(recipe.description, style: TextStyle(fontFamily: 'Montserrat')),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => RecipeDetailScreen(recipe: recipe),
-              ),
-            );
-          },
+  Widget build(BuildContext context) {
+    return Consumer<UserProfile>(
+      builder: (context, userProfile, _) {
+        final isFavorite = userProfile.isFavorite(recipe);
+        return Card(
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: BorderSide(color: Colors.grey[200]!),
+          ),
+          child: InkWell(
+            onTap: onTap,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(12)),
+                  child: Image.network(
+                    recipe.imageUrl,
+                    height: 200,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        height: 200,
+                        color: Colors.grey[100],
+                        child: Icon(Icons.restaurant,
+                            size: 64, color: Colors.grey[400]),
+                      );
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              recipe.title,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              isFavorite ? Icons.favorite : Icons.favorite_border,
+                              color: isFavorite ? Colors.red : Colors.grey,
+                            ),
+                            onPressed: () {
+                              if (isFavorite) {
+                                userProfile.removeFavoriteRecipe(recipe);
+                              } else {
+                                userProfile.addFavoriteRecipe(recipe);
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Icon(Icons.timer, size: 16, color: Colors.grey[600]),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${recipe.cookingTime} мин',
+                            style: TextStyle(color: Colors.grey[600]),
+                          ),
+                          const SizedBox(width: 16),
+                          Icon(Icons.restaurant_menu,
+                              size: 16, color: Colors.grey[600]),
+                          const SizedBox(width: 4),
+                          Text(
+                            recipe.category,
+                            style: TextStyle(color: Colors.grey[600]),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
       },
     );
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    return Center(child: Text("Введите название рецепта для поиска", style: TextStyle(fontFamily: 'Montserrat',),));
   }
 }
